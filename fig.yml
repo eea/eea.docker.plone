@@ -1,0 +1,22 @@
+zeo:
+  image: alteroo/zeoserver
+  user: 88
+  volumes_from:
+   - data
+app:
+  image: alteroo/plone-instance
+  user: 88
+  links:
+   - zeo:zeo
+  ports:
+   - "8080:8080"
+  volumes_from:
+   - data
+data:
+  build: data
+  user: 88
+  volumes:
+   - /opt/plone/app/var/blobstorage
+   - /opt/plone/app/var/filestorage
+   - /opt/plone/app/var/instance
+   - /opt/plone/app/var/log
