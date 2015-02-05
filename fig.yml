@@ -9,7 +9,16 @@ app:
   links:
    - zeo:zeo
   ports:
-   - "8080:8080"
+   - "8080"
+  volumes_from:
+   - data
+appadmin:
+  image: alteroo/plone-instance
+  user: 88
+  links:
+   - zeo:zeo
+  ports:
+   - "8888:8080"
   volumes_from:
    - data
 data:
@@ -18,5 +27,10 @@ data:
   volumes:
    - /opt/plone/app/var/blobstorage
    - /opt/plone/app/var/filestorage
-   - /opt/plone/app/var/instance
-   - /opt/plone/app/var/log
+varnish:
+  build: varnish
+  links:
+   - app:instance1
+   - app:instance2
+  ports:
+   - "8080:80"
