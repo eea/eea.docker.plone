@@ -1,4 +1,4 @@
-# plone-docker-bootstrap
+# EEA plone docker setup
 
 Plone multi-container cluster application for 
 fast isolated and automated development, 
