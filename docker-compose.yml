@@ -1,9 +1,11 @@
 zeo:
+  restart: always
   image: alteroo/zeoserver
   user: 88
   volumes_from:
    - data
 app:
+  restart: always
   image: alteroo/plone-instance
   user: 88
   links:
@@ -13,6 +15,7 @@ app:
   volumes_from:
    - data
 appadmin:
+  restart: always
   image: alteroo/plone-instance
   user: 88
   links:
@@ -28,6 +31,7 @@ data:
    - /opt/plone/app/var/blobstorage
    - /opt/plone/app/var/filestorage
 varnish:
+  restart: always
   build: varnish
   links:
    - app:instance1
