@@ -128,12 +128,12 @@ The parent directory of the `Data.fs` file is mounted as a `read-only` volume in
 The `data` container must have this directory marked as a volume, so it can be used by the `plone-instance` container,
 with a command like:
 
-    $ docker run --volumes-from <name_of_your_data_container> eeacms/zeoserver
+    $ docker run --volumes-from <name_of_your_data_container> eeacms/plone-instance
 
-The volumes from the `data` container will overwrite the contents of the directories inside the `zeoserver`
+The volumes from the `data` container will overwrite the contents of the directories inside the `plone-instance`
 container, in a similar way in which the `mount` command works. So, for example, if your data container
-has `/opt/zeoserver/var/filestorage` marked as a volume, running the above command will overwrite the
-contents of that folder in the `zeoserver` with whatever there is in the `data` container.
+has `/opt/plone/var/filestorage` marked as a volume, running the above command will overwrite the
+contents of that folder in the `plone` with whatever there is in the `data` container.
 
 The data container can also be easily [copied, moved and be reused between different environments](https://docs.docker.com/userguide/dockervolumes/#backup-restore-or-migrate-data-volumes).
 
