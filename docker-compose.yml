@@ -1,40 +1,10 @@
-zeo:
-  restart: always
-  image: alteroo/zeoserver
-  user: 88
-  volumes_from:
-   - data
-app:
-  restart: always
-  image: alteroo/plone-instance
-  user: 88
-  links:
-   - zeo:zeo
-  ports:
-   - "8080"
-  volumes_from:
-   - data
-appadmin:
-  restart: always
-  image: alteroo/plone-instance
-  user: 88
-  links:
-   - zeo:zeo
-  ports:
-   - "8888:8080"
-  volumes_from:
-   - data
-data:
-  build: data
-  user: 88
-  volumes:
-   - /opt/plone/app/var/blobstorage
-   - /opt/plone/app/var/filestorage
-varnish:
-  restart: always
-  build: varnish
-  links:
-   - app:instance1
-   - app:instance2
-  ports:
-   - "8080:80"
+plone:
+  build: .
+  user: 1000
+  environment:
+  - INDEX=
+      http://eggrepo.apps.eea.europa.eu/pypi/
+  - FIND_LINKS=
+      http://eggrepo.apps.eea.europa.eu/simple
+      http://dist.plone.org/thirdparty/
+      http://pypi.python.org/pypi
