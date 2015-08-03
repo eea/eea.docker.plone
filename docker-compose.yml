@@ -1,5 +1,7 @@
 plone:
   image: eeacms/plone-instance
+  ports:
+  - "80:80"
   links:
   - zeoserver
   environment:

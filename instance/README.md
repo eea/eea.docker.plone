@@ -140,24 +140,25 @@ The data container can also be easily [copied, moved and be reused between diffe
 
 ### Docker-compose example
 
-A `docker-compose.yml` file for `plone-instance` using a `data` container:
+A `docker-compose.yml` file for `plone-instance` used as a `ZEO` client:
 
-    plone-app:
-      image: eeacms/plone-instance:latest
-      user: "500"
-      volumes_from:
-       - data
+    plone:
+      image: eeacms/plone-instance
+      ports:
+      - "80:80"
+      links:
+      - zeoserver
+      environment:
+      - BUILDOUT_ZEO_CLIENT=True
+      - BUILDOUT_ZEO_ADDRESS=zeoserver:8100
 
-    data:
-      build: data
-      volumes:
-       - /opt/plone/var/filestorage
-
+    zeoserver:
+      image: eeacms/zeoserver
 
 
 ## Upgrade
 
-    $ docker pull eeacms/plone-instance:latest
+    $ docker pull eeacms/plone-instance
 
 
 ## Supported environment variables ##
