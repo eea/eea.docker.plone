@@ -176,10 +176,15 @@ to include your add-on (in this case `eea.pdf`) and start Plone instance.
 
 Now you can start developing your add-on within `src/eea.pdf` using your favorite editor/ide.
 
-To reload add-on changes just restart Plone container using docker stop/start commands:
+To reload add-on changes just restart Plone container using docker stop/start/restart commands:
 
     $ docker-compose stop
     $ docker-compose start
+    $ docker-compose logs
+
+or
+
+    $ docker-compose restart
     $ docker-compose logs
 
 If you need to re-run buildout before Plone start, then use the `docker-compose up` command:
