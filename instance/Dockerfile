@@ -19,6 +19,4 @@ RUN python bootstrap.py -v 2.2.1 --setuptools-version=7.0 -c base.cfg && \
 
 VOLUME $PLONE_HOME/var/
 
-USER zope-www
-
 CMD ["start"]

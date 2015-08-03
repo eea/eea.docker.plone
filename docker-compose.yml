@@ -1,10 +1,10 @@
 plone:
-  build: .
-  user: 1000
+  image: eeacms/plone-instance
+  links:
+  - zeoserver
   environment:
-  - INDEX=
-      http://eggrepo.apps.eea.europa.eu/pypi/
-  - FIND_LINKS=
-      http://eggrepo.apps.eea.europa.eu/simple
-      http://dist.plone.org/thirdparty/
-      http://pypi.python.org/pypi
+  - BUILDOUT_ZEO_CLIENT=True
+  - BUILDOUT_ZEO_ADDRESS=zeoserver:8100
+
+zeoserver:
+  image: eeacms/zeoserver
