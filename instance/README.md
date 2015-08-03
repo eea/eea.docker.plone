@@ -32,7 +32,7 @@ recipe package so it is advised that you check it out.
 
     $ docker run eeacms/plone-instance:latest
 
-The image is built using a bare `buildout.cfg` file:
+The image is built using a bare `base.cfg` file:
 
     [buildout]
     extends = http://dist.plone.org/release/4.3.6/versions.cfg
@@ -89,7 +89,7 @@ a rebuild at start and might cause a few seconds of delay.
 
 You are able to start a container with your custom `buildout` configuration with the mention
 that it must be mounted at `/opt/plone/buildout.cfg` inside the container. Keep in mind
-that this option will trigger a rebuild at start and might cause delay, based on your
+that this option will trigger a rebuild at container creation and might cause delay, based on your
 configuration. It is unadvised to use this option to install many packages, because they will
 have to be reinstalled every time a container is created.
 
@@ -108,6 +108,85 @@ you can extend it with your configuration. You can write Dockerfile like this
 and then run
 
    $ docker build -t your-image-name:your-image-tag path/to/Dockerfile
+
+
+### ZEO client
+
+Bellow is an example of `docker-compose.yml` file for `plone-instance` used as a `ZEO` client:
+
+    plone:
+      image: eeacms/plone-instance
+      ports:
+      - "80:80"
+      links:
+      - zeoserver
+      environment:
+      - BUILDOUT_ZEO_CLIENT=True
+      - BUILDOUT_ZEO_ADDRESS=zeoserver:8100
+
+    zeoserver:
+      image: eeacms/zeoserver
+
+### RelStorage client
+
+Bellow is an example of `docker-compose.yml` file for `plone-instance` used as a `RelStorage + PostgreSQL` client
+
+    plone:
+      image: eeacms/plone-instance
+      ports:
+      - "80:80"
+      links:
+      - postgres
+      environment:
+      - BUILDOUT_REL-STORAGE=type postgresql \n host postgres \n dbname datafs \n user plone \n password plone
+      - BUIDLOUT_EGGS=RelStorage psycopg2
+
+    postgres:
+      image: eeacms/postgres
+      environment:
+      - POSTGRES_DBNAME=datafs
+      - POSTGRES_DBUSER=plone
+      - POSTGRES_DBPASS=plone
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+
+
+### Developing Plone Add-ons
+
+Add the following code within `docker-compose.yml` to develop `eea.pdf` add-on:
+
+    plone:
+      image: eeacms/plone-instance
+      ports:
+      - "80:80"
+      environment:
+      - SOURCE_EEA_PDF=git https://github.com/collective/eea.pdf.git pushurl=git@github.com:collective/eea.pdf.git
+      - BUILDOUT_EGGS=eea.pdf
+      volumes:
+      - src:/opt/plone/src
+
+Then:
+
+    $ mkdir -p src
+    $ docker-compose up -d
+
+This will git pull `eea.pdf` source code within `src` directory located on host
+relatively to `docker-compose.yml` file, re-run buildout within container
+to include your add-on (in this case `eea.pdf`) and start Plone instance.
+
+Now you can start developing your add-on within `src/eea.pdf` using your favorite editor/ide.
+
+To reload add-on changes just restart Plone container using docker stop/start commands:
+
+    $ docker-compose stop
+    $ docker-compose start
+    $ docker-compose logs
+
+If you need to re-run buildout before Plone start, then use the `docker-compose up` command:
+
+    $ docker-compose up -d
+    $ docker-compose logs
+
 
 ## Persistent data as you wish
 
@@ -140,20 +219,17 @@ The data container can also be easily [copied, moved and be reused between diffe
 
 ### Docker-compose example
 
-A `docker-compose.yml` file for `plone-instance` used as a `ZEO` client:
+A `docker-compose.yml` file for `plone-instance` using a `data` container:
 
     plone:
       image: eeacms/plone-instance
-      ports:
-      - "80:80"
-      links:
-      - zeoserver
-      environment:
-      - BUILDOUT_ZEO_CLIENT=True
-      - BUILDOUT_ZEO_ADDRESS=zeoserver:8100
+      volumes_from:
+       - data
 
-    zeoserver:
-      image: eeacms/zeoserver
+    data:
+      build: data
+      volumes:
+       - /opt/plone/var/filestorage
 
 
 ## Upgrade

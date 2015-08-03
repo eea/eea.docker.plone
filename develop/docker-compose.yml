@@ -1,0 +1,9 @@
+plone:
+  image: eeacms/plone-instance
+  ports:
+  - "80:80"
+  environment:
+  - SOURCE_EEA_PDF=git https://github.com/collective/eea.pdf.git pushurl=git@github.com:collective/eea.pdf.git
+  - BUILDOUT_EGGS=eea.pdf
+  volumes:
+  - src:/opt/plone/src

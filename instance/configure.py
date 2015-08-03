@@ -6,6 +6,7 @@ extends = base.cfg
 """
 configuration = ""
 extra_buildout_configuration = ""
+sources = ""
 
 existing_types = [
     "eggs"
@@ -32,6 +33,7 @@ conf_types = [
     "entry_points"
 ]
 
+# build [instance]
 for variable in os.environ:
     if "BUILDOUT_" not in variable:
         continue
@@ -40,7 +42,7 @@ for variable in os.environ:
         configuration += "%s +=\n" % tag
         for value in os.environ[variable].strip('"\'').split():
             configuration += "\t%s\n" % value
-    if tag in list_types:
+    elif tag in list_types:
         configuration += "%s =\n" % tag
         for value in os.environ[variable].strip('"\'').split():
             configuration += "\t%s\n" % value
@@ -61,14 +63,27 @@ if "FIND_LINKS" in os.environ:
     for value in os.environ["FIND_LINKS"].strip('"\'').split():
         extra_buildout_configuration += "\t%s\n" % value
 
+# build [sources]
+for variable in os.environ:
+    if "SOURCE_" not in variable:
+        continue
+    package = variable[7:].lower().replace('_', '.')
+    sources += "%s = %s\n" % (package, os.environ[variable])
+
 if extra_buildout_configuration:
     header += extra_buildout_configuration
+
+if sources:
+    header += """
+[sources]
+""" + sources
 
 if configuration:
     header += """
 [instance]
 """
 
-if extra_buildout_configuration or configuration:
+
+if extra_buildout_configuration or configuration or sources:
     buildout = open("/opt/plone/buildout.cfg", "w")
     print >> buildout, header + configuration,

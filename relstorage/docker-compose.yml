@@ -1,0 +1,19 @@
+plone:
+  image: eeacms/plone-instance
+  ports:
+  - "80:80"
+  links:
+  - postgres
+  environment:
+  - BUIDLOUT_EGGS=RelStorage psycopg2
+  - BUILDOUT_REL-STORAGE=type postgresql \n host postgres \n dbname datafs \n user plone \n password plone
+
+postgres:
+  image: eeacms/postgres
+  environment:
+  - POSTGRES_DBNAME=datafs
+  - POSTGRES_DBUSER=plone
+  - POSTGRES_DBPASS=plone
+  - POSTGRES_USER=postgres
+  - POSTGRES_PASSWORD=secret
+
