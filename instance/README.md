@@ -20,7 +20,9 @@ your non-related EEA projects.
 
 ### Installation
 
-1. Install [Docker](https://www.docker.com/).
+1. Install [Docker](https://www.docker.com/)
+
+2. Install [Docker Compose](https://docs.docker.com/compose/) (optional)
 
 ## Usage
 
@@ -30,18 +32,11 @@ recipe package so it is advised that you check it out.
 
 ### Run with basic configuration
 
-    $ docker run eeacms/plone-instance:latest
+    $ docker run eeacms/plone-instance
 
-The image is built using a bare `base.cfg` file:
+The image is built using a bare [base.cfg](https://github.com/eea/eea.docker.plone/blob/master/instance/src/base.cfg) file:
 
-    [buildout]
-    extends = http://dist.plone.org/release/4.3.6/versions.cfg
-    parts = instance
-
-    [versions]
-    zc.buildout = 2.2.1
-    setuptools = 7.0
-
+    ...
     [instance]
     recipe = plone.recipe.zope2instance
     user = admin:admin
@@ -51,6 +46,7 @@ The image is built using a bare `base.cfg` file:
       Pillow
       Plone
       plone.app.upgrade
+    ...
 
 `plone` will therefore run inside the container with the default parameters given
 by the recipe, with some little customization, such as listening on `port 80`.
@@ -59,14 +55,14 @@ by the recipe, with some little customization, such as listening on `port 80`.
 
 Environment variables can be supplied either via an `env_file` with the `--env-file` flag
 
-    $ docker run --env-file plone.env eeacms/plone-instance:latest
+    $ docker run --env-file plone.env eeacms/plone-instance
 
 or via the `--env` flag
 
-    $ docker run --env BUILDOUT_HTTP_ADDRESS="8080" eeacms/plone-instance:latest
+    $ docker run --env BUILDOUT_HTTP_ADDRESS="8080" eeacms/plone-instance
 
 It is **very important** to know that the environment variables supplied are translated
-into buildout configuration. For each variable with the prefix `BUILDOUT_` there will be
+into `zc.buildout` configuration. For each variable with the prefix `BUILDOUT_` there will be
 a line added to the `[instance]` configuration. For example, if you want to set the
 `read-only` attribute to the value `true`, you have to supply an environment variable
 in the form `BUILDOUT_READ_ONLY="true"`. When the environment variable is processed,
@@ -81,7 +77,7 @@ look like
 
 The variables supported are the ones supported by the [recipe](https://pypi.python.org/pypi/plone.recipe.zope2instance),
 so check out its documentation for a full list. Keep in mind that this option will trigger
-a rebuild at start and might cause a few seconds of delay.
+a rebuild when the docker container is created and might cause a few seconds of delay.
 
 ### Use a custom configuration file mounted as a volume
 
@@ -91,24 +87,33 @@ You are able to start a container with your custom `buildout` configuration with
 that it must be mounted at `/opt/plone/buildout.cfg` inside the container. Keep in mind
 that this option will trigger a rebuild at container creation and might cause delay, based on your
 configuration. It is unadvised to use this option to install many packages, because they will
-have to be reinstalled every time a container is created.
+have to be reinstalled every time a container is created. To speed up deployment,
+you may want to build your custom image. See the next section for examples
+on how to accomplish this task.
 
 
-### Extend the image with a custom configuration file
+### Extend the image with custom buildout configuration files
 
-Additionaly, in case you need to considerably change the base configuration of this image,
-you can extend it with your configuration. You can write Dockerfile like this
+For this you have the possibility to override:
 
-    FROM eeacms/plone-instance:latest
-    # Add your configuration file
-    COPY path/to/configuration/file /opt/plone/base.cfg
-    # Rebuild
-    RUN /opt/plone/bin/buildout -c /opt/plone/base.cfg
+* `versions.cfg` - provide your custom Plone and Add-ons versions
+* `sources.cfg`  - provide un-released Plone Add-ons
+* `base.cfg`     - customize everything
+
+Bellow is an example of `Dockerfile` to build a custom version of Plone with your
+custom versions of packages based on this image:
+
+    FROM eeacms/plone-instance
+
+    COPY versions.cfg /opt/plone/versions.cfg
+    RUN ./install.sh
 
 and then run
 
-   $ docker build -t your-image-name:your-image-tag path/to/Dockerfile
+    $ docker build -t plone:custom .
 
+In the same way you can provide custom `sources.cfg` and `base.cfg` or all of
+them together.
 
 ### ZEO client
 
@@ -195,19 +200,20 @@ If you need to re-run buildout before Plone start, then use the `docker-compose 
 
 ## Persistent data as you wish
 
-The `plone-instance` data is kept in a [data-only container](https://medium.com/@ramangupta/why-docker-data-containers-are-good-589b3c6c749e).
-The `data` container keeps the persistent data for a production environment and must be backed up. If you are running in a devel environment,
-you can skip the backup and delete the container if you want.
+For production use, in order to avoid data loss we advise you to keep your Data.fs and blobs within
+a [data-only container](https://medium.com/@ramangupta/why-docker-data-containers-are-good-589b3c6c749e).
+The `data` container keeps the persistent data for a production environment and must be backed up.
+If you are running in a devel environment, you can skip the backup and delete the container if you want.
 
 If you have a Data.fs file for your application, you can add it to the `data` container with the following
 command:
 
     $ docker run --rm --volumes-from <name_of_your_data_container> \
       -v /path/to/parent/directory/of/Data.fs/file:/mnt:ro \
-      debian /bin/bash -c "cp /mnt/Data.fs /opt/plone/var/filestorage && \
+      busybox sh -c "cp /mnt/Data.fs /opt/plone/var/filestorage && \
       chown -R 500:500 /opt/plone/var/filestorage"
 
-The command above creates a bare `debian` container using the persistent volumes of your data container.
+The command above creates a bare `busybox` container using the persistent volumes of your data container.
 The parent directory of the `Data.fs` file is mounted as a `read-only` volume in `/mnt`, from where the
 `Data.fs` file is copied to the filestorage directory you are going to use (default `/opt/plone/var/filestorage`).
 The `data` container must have this directory marked as a volume, so it can be used by the `plone-instance` container,
@@ -235,6 +241,16 @@ A `docker-compose.yml` file for `plone-instance` using a `data` container:
       build: data
       volumes:
        - /opt/plone/var/filestorage
+       - /opt/plone/var/blobstorage
+
+here `data` is a directory containing the following `Dockerfile`:
+
+    FROM busybox
+    RUN mkdir -p /opt/plone/var/filestorage
+    RUN mkdir -p /opt/plone/var/blobstorage
+    VOLUME /opt/plone/var/filestorage
+    VOLUME /opt/plone/var/blobstorage
+    USER 500
 
 
 ## Upgrade
@@ -256,6 +272,11 @@ in BUILDOUT_EVENT_LOG_CUSTOM="<graylog> \n server 123.4.5.6 \n rabbit True \n </
 
 Besides the variables supported by the `zope2instance` recipe, you can also use `INDEX` and `FIND_LINKS`
 that extend the `[buildout]` tag.
+
+Also, to provide `sources.cfg` entries, use `SOURCE_` prefix, like:
+
+    SOURCE_EEA_PDF=git https://github.com/collective/eea.pdf.git
+
 
 ## Copyright and license
 

@@ -83,7 +83,6 @@ if configuration:
 [instance]
 """
 
-
 if extra_buildout_configuration or configuration or sources:
     buildout = open("/opt/plone/buildout.cfg", "w")
     print >> buildout, header + configuration,
