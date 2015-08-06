@@ -20,9 +20,8 @@ RUN mkdir -p $PLONE_HOME/var && \
     useradd  -g 500 -u 500 -m -s /bin/bash zope-www && \
     chown -R 500:500 $PLONE_HOME
 
+WORKDIR $PLONE_HOME
+RUN ./install.sh
 VOLUME $PLONE_HOME/var/
 
-WORKDIR $PLONE_HOME
-
-RUN ./install.sh
 CMD ["start"]
