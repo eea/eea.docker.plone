@@ -81,10 +81,10 @@ a rebuild when the docker container is created and might cause a few seconds of 
 
 ### Use a custom configuration file mounted as a volume
 
-    $ docker run -v /path/to/your/configuration/file:/opt/plone/buildout.cfg eeacms/plone-instance:latest
+    $ docker run -v /path/to/your/configuration/file:/opt/zope/buildout.cfg eeacms/plone-instance:latest
 
 You are able to start a container with your custom `buildout` configuration with the mention
-that it must be mounted at `/opt/plone/buildout.cfg` inside the container. Keep in mind
+that it must be mounted at `/opt/zope/buildout.cfg` inside the container. Keep in mind
 that this option will trigger a rebuild at container creation and might cause delay, based on your
 configuration. It is unadvised to use this option to install many packages, because they will
 have to be reinstalled every time a container is created. To speed up deployment,
@@ -105,7 +105,7 @@ custom versions of packages based on this image:
 
     FROM eeacms/plone-instance
 
-    COPY versions.cfg /opt/plone/versions.cfg
+    COPY versions.cfg /opt/zope/versions.cfg
     RUN ./install.sh
 
 and then run
@@ -168,7 +168,7 @@ Add the following code within `docker-compose.yml` to develop `eea.pdf` add-on:
       - SOURCE_EEA_PDF=git https://github.com/collective/eea.pdf.git pushurl=git@github.com:collective/eea.pdf.git
       - BUILDOUT_EGGS=eea.pdf
       volumes:
-      - src:/opt/plone/src
+      - src:/opt/zope/src
 
 Then:
 
@@ -210,12 +210,12 @@ command:
 
     $ docker run --rm --volumes-from <name_of_your_data_container> \
       -v /path/to/parent/directory/of/Data.fs/file:/mnt:ro \
-      busybox sh -c "cp /mnt/Data.fs /opt/plone/var/filestorage && \
-      chown -R 500:500 /opt/plone/var/filestorage"
+      busybox sh -c "cp /mnt/Data.fs /opt/zope/var/filestorage && \
+      chown -R 500:500 /opt/zope/var/filestorage"
 
 The command above creates a bare `busybox` container using the persistent volumes of your data container.
 The parent directory of the `Data.fs` file is mounted as a `read-only` volume in `/mnt`, from where the
-`Data.fs` file is copied to the filestorage directory you are going to use (default `/opt/plone/var/filestorage`).
+`Data.fs` file is copied to the filestorage directory you are going to use (default `/opt/zope/var/filestorage`).
 The `data` container must have this directory marked as a volume, so it can be used by the `plone-instance` container,
 with a command like:
 
@@ -223,7 +223,7 @@ with a command like:
 
 The volumes from the `data` container will overwrite the contents of the directories inside the `plone-instance`
 container, in a similar way in which the `mount` command works. So, for example, if your data container
-has `/opt/plone/var/filestorage` marked as a volume, running the above command will overwrite the
+has `/opt/zope/var/filestorage` marked as a volume, running the above command will overwrite the
 contents of that folder in the `plone` with whatever there is in the `data` container.
 
 The data container can also be easily [copied, moved and be reused between different environments](https://docs.docker.com/userguide/dockervolumes/#backup-restore-or-migrate-data-volumes).
@@ -240,16 +240,16 @@ A `docker-compose.yml` file for `plone-instance` using a `data` container:
     data:
       build: data
       volumes:
-       - /opt/plone/var/filestorage
-       - /opt/plone/var/blobstorage
+       - /opt/zope/var/filestorage
+       - /opt/zope/var/blobstorage
 
 here `data` is a directory containing the following `Dockerfile`:
 
     FROM busybox
-    RUN mkdir -p /opt/plone/var/filestorage
-    RUN mkdir -p /opt/plone/var/blobstorage
-    VOLUME /opt/plone/var/filestorage
-    VOLUME /opt/plone/var/blobstorage
+    RUN mkdir -p /opt/zope/var/filestorage
+    RUN mkdir -p /opt/zope/var/blobstorage
+    VOLUME /opt/zope/var/filestorage
+    VOLUME /opt/zope/var/blobstorage
     USER 500
 
 
