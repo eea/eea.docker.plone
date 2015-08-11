@@ -100,7 +100,7 @@ For this you have the possibility to override:
 * `sources.cfg`  - provide un-released Plone Add-ons
 * `base.cfg`     - customize everything
 
-Bellow is an example of `Dockerfile` to build a custom version of Plone with your
+Below is an example of `Dockerfile` to build a custom version of Plone with your
 custom versions of packages based on this image:
 
     FROM eeacms/plone
@@ -117,7 +117,7 @@ them together.
 
 ### ZEO client
 
-Bellow is an example of `docker-compose.yml` file for `plone` used as a `ZEO` client:
+Below is an example of `docker-compose.yml` file for `plone` used as a `ZEO` client:
 
     plone:
       image: eeacms/plone
@@ -134,7 +134,7 @@ Bellow is an example of `docker-compose.yml` file for `plone` used as a `ZEO` cl
 
 ### RelStorage client
 
-Bellow is an example of `docker-compose.yml` file for `plone` used as a `RelStorage + PostgreSQL` client
+Below is an example of `docker-compose.yml` file for `plone` used as a `RelStorage + PostgreSQL` client
 
     plone:
       image: eeacms/plone
