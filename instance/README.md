@@ -12,7 +12,7 @@ your non-related EEA projects.
 
 ### Base docker image
 
- - [hub.docker.com](https://registry.hub.docker.com/u/eeacms/plone-instance)
+ - [hub.docker.com](https://registry.hub.docker.com/u/eeacms/plone)
 
 ### Source code
 
@@ -32,7 +32,7 @@ recipe package so it is advised that you check it out.
 
 ### Run with basic configuration
 
-    $ docker run eeacms/plone-instance
+    $ docker run eeacms/plone
 
 The image is built using a bare [base.cfg](https://github.com/eea/eea.docker.plone/blob/master/instance/src/base.cfg) file:
 
@@ -55,11 +55,11 @@ by the recipe, with some little customization, such as listening on `port 80`.
 
 Environment variables can be supplied either via an `env_file` with the `--env-file` flag
 
-    $ docker run --env-file plone.env eeacms/plone-instance
+    $ docker run --env-file plone.env eeacms/plone
 
 or via the `--env` flag
 
-    $ docker run --env BUILDOUT_HTTP_ADDRESS="8080" eeacms/plone-instance
+    $ docker run --env BUILDOUT_HTTP_ADDRESS="8080" eeacms/plone
 
 It is **very important** to know that the environment variables supplied are translated
 into `zc.buildout` configuration. For each variable with the prefix `BUILDOUT_` there will be
@@ -81,7 +81,7 @@ a rebuild when the docker container is created and might cause a few seconds of 
 
 ### Use a custom configuration file mounted as a volume
 
-    $ docker run -v /path/to/your/configuration/file:/opt/zope/buildout.cfg eeacms/plone-instance:latest
+    $ docker run -v /path/to/your/configuration/file:/opt/zope/buildout.cfg eeacms/plone
 
 You are able to start a container with your custom `buildout` configuration with the mention
 that it must be mounted at `/opt/zope/buildout.cfg` inside the container. Keep in mind
@@ -103,7 +103,7 @@ For this you have the possibility to override:
 Bellow is an example of `Dockerfile` to build a custom version of Plone with your
 custom versions of packages based on this image:
 
-    FROM eeacms/plone-instance
+    FROM eeacms/plone
 
     COPY versions.cfg /opt/zope/versions.cfg
     RUN ./install.sh
@@ -117,10 +117,10 @@ them together.
 
 ### ZEO client
 
-Bellow is an example of `docker-compose.yml` file for `plone-instance` used as a `ZEO` client:
+Bellow is an example of `docker-compose.yml` file for `plone` used as a `ZEO` client:
 
     plone:
-      image: eeacms/plone-instance
+      image: eeacms/plone
       ports:
       - "80:80"
       links:
@@ -134,10 +134,10 @@ Bellow is an example of `docker-compose.yml` file for `plone-instance` used as a
 
 ### RelStorage client
 
-Bellow is an example of `docker-compose.yml` file for `plone-instance` used as a `RelStorage + PostgreSQL` client
+Bellow is an example of `docker-compose.yml` file for `plone` used as a `RelStorage + PostgreSQL` client
 
     plone:
-      image: eeacms/plone-instance
+      image: eeacms/plone
       ports:
       - "80:80"
       links:
@@ -161,7 +161,7 @@ Bellow is an example of `docker-compose.yml` file for `plone-instance` used as a
 Add the following code within `docker-compose.yml` to develop `eea.pdf` add-on:
 
     plone:
-      image: eeacms/plone-instance
+      image: eeacms/plone
       ports:
       - "80:80"
       environment:
@@ -208,20 +208,22 @@ If you are running in a devel environment, you can skip the backup and delete th
 If you have a Data.fs file for your application, you can add it to the `data` container with the following
 command:
 
-    $ docker run --rm --volumes-from <name_of_your_data_container> \
-      -v /path/to/parent/directory/of/Data.fs/file:/mnt:ro \
-      busybox sh -c "cp /mnt/Data.fs /opt/zope/var/filestorage && \
-      chown -R 500:500 /opt/zope/var/filestorage"
+    $ docker run --rm \
+      --volumes-from my_data_container \
+      --volume /host/path/to/Data.fs:/restore/Data.fs:ro \
+      busybox \
+        sh -c "cp /restore/Data.fs /opt/zope/var/filestorage && \
+        chown -R 500:500 /opt/zope/var/filestorage"
 
 The command above creates a bare `busybox` container using the persistent volumes of your data container.
-The parent directory of the `Data.fs` file is mounted as a `read-only` volume in `/mnt`, from where the
+The parent directory of the `Data.fs` file is mounted as a `read-only` volume in `/restore`, from where the
 `Data.fs` file is copied to the filestorage directory you are going to use (default `/opt/zope/var/filestorage`).
-The `data` container must have this directory marked as a volume, so it can be used by the `plone-instance` container,
+The `data` container must have this directory marked as a volume, so it can be used by the `plone` container,
 with a command like:
 
-    $ docker run --volumes-from <name_of_your_data_container> eeacms/plone-instance
+    $ docker run --volumes-from my_data_container eeacms/plone
 
-The volumes from the `data` container will overwrite the contents of the directories inside the `plone-instance`
+The volumes from the `data` container will overwrite the contents of the directories inside the `plone`
 container, in a similar way in which the `mount` command works. So, for example, if your data container
 has `/opt/zope/var/filestorage` marked as a volume, running the above command will overwrite the
 contents of that folder in the `plone` with whatever there is in the `data` container.
@@ -230,23 +232,23 @@ The data container can also be easily [copied, moved and be reused between diffe
 
 ### Docker-compose example
 
-A `docker-compose.yml` file for `plone-instance` using a `data` container:
+A `docker-compose.yml` file for `plone` using a `data` container:
 
     plone:
-      image: eeacms/plone-instance
+      image: eeacms/plone
       volumes_from:
       - data
 
     data:
       image: busybox
-      user: "500"
       volumes:
       - /opt/zope/var/filestorage
       - /opt/zope/var/blobstorage
+      command: chown -R 500:500 /opt/zope/var
 
 ## Upgrade
 
-    $ docker pull eeacms/plone-instance
+    $ docker pull eeacms/plone
 
 
 ## Supported environment variables ##

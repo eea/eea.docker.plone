@@ -1,9 +1,9 @@
 # Plone Docker image used as a ZEO client
 
-Bellow is an example of `docker-compose.yml` file for `plone-instance` used as a `ZEO` client:
+Bellow is an example of `docker-compose.yml` file for `plone` used as a `ZEO` client:
 
     plone:
-      image: eeacms/plone-instance
+      image: eeacms/plone
       ports:
       - "80:80"
       links:
