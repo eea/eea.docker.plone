@@ -1,6 +1,6 @@
 # Plone Docker image (development mode)
 
-Bellow is an example of `docker-compose.yml` file that will allow you to run
+Below is an example of `docker-compose.yml` file that will allow you to run
 Plone within a Docker container and still be able to test and develop
 your Plone add-ons using your favorite editor/IDE:
 

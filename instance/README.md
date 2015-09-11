@@ -31,7 +31,7 @@ your non-related EEA projects.
 
 ## Source code
 
-  - [github.com](http://github.com/eea/eea.docker.plone)
+  - [eea.docker.plone](http://github.com/eea/eea.docker.plone)
 
 ## Installation
 
@@ -47,7 +47,11 @@ recipe package so it is advised that you check it out.
 
 ### Run with basic configuration
 
-    $ docker run eeacms/plone
+    $ docker run -p 8080:80 eeacms/plone
+
+The above will first download the images (first time) and than exposing plone on the host port 8080. Now go to `http://<yourserverip>:8080` to see Plone in action. 
+
+The above will run the container in foreground and output to consol. As usual you can [start docker container in detached mode](https://docs.docker.com/reference/run/#detached-vs-foreground).
 
 The image is built using a bare [base.cfg](https://github.com/eea/eea.docker.plone/blob/master/instance/src/base.cfg) file:
 
@@ -115,7 +119,7 @@ For this you have the possibility to override:
 * `sources.cfg`  - provide un-released Plone Add-ons
 * `base.cfg`     - customize everything
 
-Bellow is an example of `Dockerfile` to build a custom version of Plone with your
+Below is an example of `Dockerfile` to build a custom version of Plone with your
 custom versions of packages based on this image:
 
     FROM eeacms/plone
@@ -132,7 +136,7 @@ them together.
 
 ### ZEO client
 
-Bellow is an example of `docker-compose.yml` file for `plone` used as a `ZEO` client:
+Below is an example of `docker-compose.yml` file for `plone` used as a `ZEO` client:
 
     plone:
       image: eeacms/plone
@@ -149,7 +153,7 @@ Bellow is an example of `docker-compose.yml` file for `plone` used as a `ZEO` cl
 
 ### RelStorage client
 
-Bellow is an example of `docker-compose.yml` file for `plone` used as a `RelStorage + PostgreSQL` client
+Below is an example of `docker-compose.yml` file for `plone` used as a `RelStorage + PostgreSQL` client
 
     plone:
       image: eeacms/plone
