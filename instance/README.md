@@ -6,19 +6,34 @@ Docker image for Plone with `plone.recipe.zope2instance` full support
 This image is generic, thus you can obviously re-use it within
 your non-related EEA projects.
 
-### Supported tags and respective Dockerfile links
 
-  - `:4.3.6`, `:latest` (default)
+## Supported tags and respective Dockerfile links
 
-### Base docker image
+  - `:4.3.6-hotfix20150910`, `:latest` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/master/instance/Dockerfile) (default)
+  - `:4.3.6` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/4.3.6/instance/Dockerfile)
+
+
+## Changelog
+
+### 4.3.6-hotfix20150910 (2015-09-11)
+
+- Added Products.PloneHotfix20150910
+
+### 4.3.6 (2015-08-10)
+
+
+- Initial public release based on Plone 4.3.6
+
+
+## Base docker image
 
  - [hub.docker.com](https://registry.hub.docker.com/u/eeacms/plone)
 
-### Source code
+## Source code
 
   - [github.com](http://github.com/eea/eea.docker.plone)
 
-### Installation
+## Installation
 
 1. Install [Docker](https://www.docker.com/)
 
