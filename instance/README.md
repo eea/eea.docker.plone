@@ -18,7 +18,7 @@ your non-related EEA projects.
 
 ## Changelog
 
-### 4.3.7 (2015-09-29)
+### 5.0 (2015-09-29)
 
 - Added tag for Plone 5.0
 
