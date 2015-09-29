@@ -9,11 +9,17 @@ your non-related EEA projects.
 
 ## Supported tags and respective Dockerfile links
 
-  - `:4.3.6-hotfix20150910`, `:latest` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/master/instance/Dockerfile) (default)
+  - `:latest` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/master/instance/Dockerfile) (default)
+  - `:4.3.7` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/4.3.7/instance/Dockerfile)
+  - `:4.3.6-hotfix20150910` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/4.3.6-hotfix20150910/instance/Dockerfile)
   - `:4.3.6` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/4.3.6/instance/Dockerfile)
 
 
 ## Changelog
+
+### 4.3.7 (2015-09-29)
+
+- Added tag for Plone 4.3.7
 
 ### 4.3.6-hotfix20150910 (2015-09-11)
 
