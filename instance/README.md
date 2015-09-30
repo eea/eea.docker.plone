@@ -293,10 +293,15 @@ in `BUILDOUT_EGGS="eea.pdf eea.annotator"`.
 For complex variables (such as `event-log-custom`, for example), specify new lines with `\n`, as
 in BUILDOUT_EVENT_LOG_CUSTOM="<graylog> \n server 123.4.5.6 \n rabbit True \n </graylog>"
 
-Besides the variables supported by the `zope2instance` recipe, you can also use `INDEX` and `FIND_LINKS`
-that extend the `[buildout]` tag.
+Besides the variables supported by the `zope2instance` recipe, you can also use the following variables 
+to extend the `[buildout]` tag:
+- `INDEX`
+- `FIND_LINKS`
+- `EXTENSIONS`
+- `AUTO_CHECKOUT`
+- `ALWAYS_CHECKOUT`
 
-Also, to provide `sources.cfg` entries, use `SOURCE_` prefix, like:
+Also, to provide `[sources]` entries, use `SOURCE_` prefix, like:
 
     SOURCE_EEA_PDF=git https://github.com/collective/eea.pdf.git
 
