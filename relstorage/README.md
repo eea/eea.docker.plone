@@ -3,7 +3,7 @@
 Bellow is an example of `docker-compose.yml` file for `plone` used as a `RelStorage + PostgreSQL` client
 
     plone:
-      image: eeacms/plone
+      image: eeacms/plone:5.0
       ports:
       - "80:80"
       links:

@@ -1,5 +1,5 @@
 plone:
-  image: eeacms/plone
+  image: eeacms/plone:5.0
   ports:
   - "80:80"
   links:
