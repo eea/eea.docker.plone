@@ -130,19 +130,29 @@ For this you have the possibility to override:
 * `sources.cfg`  - provide un-released Plone Add-ons
 * `base.cfg`     - customize everything
 
-Below is an example of `Dockerfile` to build a custom version of Plone with your
-custom versions of packages based on this image:
+Below is an example of `base.cfg` and `Dockerfile` to build a custom version
+of Plone with your custom versions of packages based on this image:
+
+**base.cfg**:
+
+    [buildout]
+    extends = plone.cfg
+
+    [instance]
+    eggs += eea.facetednavigation
+
+**Dockerfile**:
 
     FROM eeacms/plone
 
-    COPY versions.cfg /opt/zope/versions.cfg
+    COPY base.cfg /opt/zope/base.cfg
     RUN ./install.sh
 
 and then run
 
     $ docker build -t plone:custom .
 
-In the same way you can provide custom `sources.cfg` and `base.cfg` or all of
+In the same way you can provide custom `sources.cfg` and `versions.cfg` or all of
 them together.
 
 ### ZEO client
