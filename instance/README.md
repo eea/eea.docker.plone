@@ -18,18 +18,6 @@ your non-related EEA projects.
 
 ## Changelog
 
-### 5.0 (2015-09-29)
-
-- Added tag for Plone 5.0
-
-### 4.3.7 (2015-09-29)
-
-- Added tag for Plone 4.3.7
-
-### 4.3.6-hotfix20150910 (2015-09-11)
-
-- Added Products.PloneHotfix20150910
-
 ### 4.3.6 (2015-08-10)
 
 

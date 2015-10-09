@@ -5,7 +5,7 @@ Plone within a Docker container and still be able to test and develop
 your Plone add-ons using your favorite editor/IDE:
 
     plone:
-      image: eeacms/plone
+      image: eeacms/plone:4.3.6
       ports:
       - "80:80"
       environment:
