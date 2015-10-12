@@ -60,7 +60,7 @@ recipe package so it is advised that you check it out.
 
     $ docker run -p 8080:80 eeacms/plone
 
-The above will first download the images (first time) and than exposing plone on the host port 8080. Now go to `http://<yourserverip>:8080` to see Plone in action. 
+The above will first download the images (first time) and than exposing plone on the host port 8080. Now go to `http://<yourserverip>:8080` to see Plone in action.
 
 The above will run the container in foreground and output to consol. As usual you can [start docker container in detached mode](https://docs.docker.com/reference/run/#detached-vs-foreground).
 
@@ -208,7 +208,7 @@ Add the following code within `docker-compose.yml` to develop `eea.pdf` add-on:
       - SOURCE_EEA_PDF=git https://github.com/collective/eea.pdf.git pushurl=git@github.com:collective/eea.pdf.git
       - BUILDOUT_EGGS=eea.pdf
       volumes:
-      - src:/opt/zope/src
+      - ./src:/opt/zope/src
 
 Then:
 
@@ -303,7 +303,7 @@ in `BUILDOUT_EGGS="eea.pdf eea.annotator"`.
 For complex variables (such as `event-log-custom`, for example), specify new lines with `\n`, as
 in BUILDOUT_EVENT_LOG_CUSTOM="<graylog> \n server 123.4.5.6 \n rabbit True \n </graylog>"
 
-Besides the variables supported by the `zope2instance` recipe, you can also use the following variables 
+Besides the variables supported by the `zope2instance` recipe, you can also use the following variables
 to extend the `[buildout]` tag:
 - `INDEX`
 - `FIND_LINKS`

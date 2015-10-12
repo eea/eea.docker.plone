@@ -6,4 +6,4 @@ plone:
   - SOURCE_EEA_PDF=git https://github.com/collective/eea.pdf.git pushurl=git@github.com:collective/eea.pdf.git
   - BUILDOUT_EGGS=eea.pdf
   volumes:
-  - src:/opt/zope/src
+  - ./src:/opt/zope/src

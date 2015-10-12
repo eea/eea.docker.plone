@@ -12,7 +12,7 @@ your Plone add-ons using your favorite editor/IDE:
       - SOURCE_EEA_PDF=git https://github.com/collective/eea.pdf.git pushurl=git@github.com:collective/eea.pdf.git
       - BUILDOUT_EGGS=eea.pdf
       volumes:
-      - src:/opt/zope/src
+      - ./src:/opt/zope/src
 
 Now:
 
