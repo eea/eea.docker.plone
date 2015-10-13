@@ -113,6 +113,24 @@ a rebuild when the docker container is created and might cause a few seconds of 
 
     $ docker run -v /path/to/your/configuration/file:/opt/zope/buildout.cfg eeacms/plone
 
+**buildout.cfg**
+
+    [buildout]
+    extends = base.cfg
+
+    parts +=
+      zopepy
+
+    [instance]
+    eggs +=
+      eea.facetednavigation
+
+    [zopepy]
+    recipe = zc.recipe.egg
+    eggs = ${instance:eggs}
+    interpreter = zopepy
+
+
 You are able to start a container with your custom `buildout` configuration with the mention
 that it must be mounted at `/opt/zope/buildout.cfg` inside the container. Keep in mind
 that this option will trigger a rebuild at container creation and might cause delay, based on your
