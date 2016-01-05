@@ -1,12 +1,15 @@
 plone:
   image: eeacms/plone
   ports:
-  - "80:80"
+  - "8080:8080"
   links:
   - postgres
   environment:
-  - BUIDLOUT_EGGS=RelStorage psycopg2
+  - BUILDOUT_EGGS=RelStorage psycopg2 david.stuff
   - BUILDOUT_REL_STORAGE=type postgresql \n host postgres \n dbname datafs \n user zope \n password zope
+  - SOURCE_DAVID_STUFF=fs david.stuff
+  volumes:
+  - ./src:/opt/zope/src
 
 postgres:
   image: eeacms/postgres
@@ -16,4 +19,3 @@ postgres:
   - POSTGRES_DBPASS=zope
   - POSTGRES_USER=postgres
   - POSTGRES_PASSWORD=secret
-

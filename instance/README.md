@@ -6,35 +6,23 @@ Docker image for Plone with `plone.recipe.zope2instance` full support
 This image is generic, thus you can obviously re-use it within
 your non-related EEA projects.
 
+### Warning
+
+For security reasons, latest builds of this image run Plone on port **8080** instead
+of **80**. Please update your deployment accordingly.
 
 ## Supported tags and respective Dockerfile links
 
   - `:latest` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/master/instance/Dockerfile) (default)
+  - `:5.x` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/5.x/instance/Dockerfile)
   - `:5.0` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/5.0/instance/Dockerfile)
+  - `:4.x` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/4.x/instance/Dockerfile)
   - `:4.3.7` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/4.3.7/instance/Dockerfile)
-  - `:4.3.6-hotfix20150910` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/4.3.6-hotfix20150910/instance/Dockerfile)
   - `:4.3.6` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/4.3.6/instance/Dockerfile)
 
+### Changes
 
-## Changelog
-
-### 5.0 (2015-09-29)
-
-- Added tag for Plone 5.0
-
-### 4.3.7 (2015-09-29)
-
-- Added tag for Plone 4.3.7
-
-### 4.3.6-hotfix20150910 (2015-09-11)
-
-- Added Products.PloneHotfix20150910
-
-### 4.3.6 (2015-08-10)
-
-
-- Initial public release based on Plone 4.3.6
-
+ - [CHANGELOG.md](https://github.com/eea/eea.docker.plone/blob/master/CHANGELOG.md)
 
 ## Base docker image
 
@@ -58,9 +46,9 @@ recipe package so it is advised that you check it out.
 
 ### Run with basic configuration
 
-    $ docker run -p 8080:80 eeacms/plone
+    $ docker run -p 8080:8080 eeacms/plone
 
-The above will first download the images (first time) and than exposing plone on the host port 8080. Now go to `http://<yourserverip>:8080` to see Plone in action. 
+The above will first download the images (first time) and than exposing plone on the host port 8080. Now go to `http://<yourserverip>:8080` to see Plone in action.
 
 The above will run the container in foreground and output to consol. As usual you can [start docker container in detached mode](https://docs.docker.com/reference/run/#detached-vs-foreground).
 
@@ -70,7 +58,7 @@ The image is built using a bare [base.cfg](https://github.com/eea/eea.docker.plo
     [instance]
     recipe = plone.recipe.zope2instance
     user = admin:admin
-    http-address = 80
+    http-address = 8080
     effective-user = zope-www
     eggs =
       Pillow
@@ -79,7 +67,7 @@ The image is built using a bare [base.cfg](https://github.com/eea/eea.docker.plo
     ...
 
 `plone` will therefore run inside the container with the default parameters given
-by the recipe, with some little customization, such as listening on `port 80`.
+by the recipe, with some little customization, such as `effective-user`.
 
 ### Extend configuration through environment variables
 
@@ -89,7 +77,7 @@ Environment variables can be supplied either via an `env_file` with the `--env-f
 
 or via the `--env` flag
 
-    $ docker run --env BUILDOUT_HTTP_ADDRESS="8080" eeacms/plone
+    $ docker run --env BUILDOUT_HTTP_ADDRESS="8081" eeacms/plone
 
 It is **very important** to know that the environment variables supplied are translated
 into `zc.buildout` configuration. For each variable with the prefix `BUILDOUT_` there will be
@@ -112,6 +100,24 @@ a rebuild when the docker container is created and might cause a few seconds of 
 ### Use a custom configuration file mounted as a volume
 
     $ docker run -v /path/to/your/configuration/file:/opt/zope/buildout.cfg eeacms/plone
+
+**buildout.cfg**
+
+    [buildout]
+    extends = base.cfg
+
+    parts +=
+      zopepy
+
+    [instance]
+    eggs +=
+      eea.facetednavigation
+
+    [zopepy]
+    recipe = zc.recipe.egg
+    eggs = ${instance:eggs}
+    interpreter = zopepy
+
 
 You are able to start a container with your custom `buildout` configuration with the mention
 that it must be mounted at `/opt/zope/buildout.cfg` inside the container. Keep in mind
@@ -155,6 +161,23 @@ and then run
 In the same way you can provide custom `sources.cfg` and `versions.cfg` or all of
 them together.
 
+If your egg has system dependencies, you should define these dependencies
+within a file called *requires.yum* inside the egg. For example, eea.converter
+requires wkhtmltopdf and ImageMagick, for this:
+
+    $ tree /opt/zope/eggs/eea.converter
+    /opt/zope/eggs/eea.converter
+    |_ EGG-INFO/requires.yum
+    |_ ...
+
+    $ cat /opt/zope/eggs/eea.converter/EGG-INFO/requires.yum
+    ImageMagick
+    http://download.gna.org/wkhtmltopdf/0.12/0.12.2.1/wkhtmltox-0.12.2.1_linux-centos7-amd64.rpm
+
+In this way, this image will know to install these dependencies before starting
+Zope.
+
+
 ### ZEO client
 
 Below is an example of `docker-compose.yml` file for `plone` used as a `ZEO` client:
@@ -162,7 +185,7 @@ Below is an example of `docker-compose.yml` file for `plone` used as a `ZEO` cli
     plone:
       image: eeacms/plone
       ports:
-      - "80:80"
+      - "8080:8080"
       links:
       - zeoserver
       environment:
@@ -179,7 +202,7 @@ Below is an example of `docker-compose.yml` file for `plone` used as a `RelStora
     plone:
       image: eeacms/plone
       ports:
-      - "80:80"
+      - "8080:8080"
       links:
       - postgres
       environment:
@@ -203,12 +226,12 @@ Add the following code within `docker-compose.yml` to develop `eea.pdf` add-on:
     plone:
       image: eeacms/plone
       ports:
-      - "80:80"
+      - "8080:8080"
       environment:
       - SOURCE_EEA_PDF=git https://github.com/collective/eea.pdf.git pushurl=git@github.com:collective/eea.pdf.git
       - BUILDOUT_EGGS=eea.pdf
       volumes:
-      - src:/opt/zope/src
+      - ./src:/opt/zope/src
 
 Then:
 
@@ -303,7 +326,7 @@ in `BUILDOUT_EGGS="eea.pdf eea.annotator"`.
 For complex variables (such as `event-log-custom`, for example), specify new lines with `\n`, as
 in BUILDOUT_EVENT_LOG_CUSTOM="<graylog> \n server 123.4.5.6 \n rabbit True \n </graylog>"
 
-Besides the variables supported by the `zope2instance` recipe, you can also use the following variables 
+Besides the variables supported by the `zope2instance` recipe, you can also use the following variables
 to extend the `[buildout]` tag:
 - `INDEX`
 - `FIND_LINKS`

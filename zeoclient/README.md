@@ -5,7 +5,7 @@ Bellow is an example of `docker-compose.yml` file for `plone` used as a `ZEO` cl
     plone:
       image: eeacms/plone
       ports:
-      - "80:80"
+      - "8080:8080"
       links:
       - zeoserver
       environment:

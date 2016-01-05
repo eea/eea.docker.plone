@@ -5,7 +5,7 @@ Bellow is an example of `docker-compose.yml` file for `plone` used as a `RelStor
     plone:
       image: eeacms/plone
       ports:
-      - "80:80"
+      - "8080:8080"
       links:
       - postgres
       environment:
