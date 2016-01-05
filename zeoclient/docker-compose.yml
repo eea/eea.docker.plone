@@ -1,7 +1,7 @@
 plone:
   image: eeacms/plone:5.0
   ports:
-  - "80:80"
+  - "8080:8080"
   links:
   - zeoserver
   environment:
