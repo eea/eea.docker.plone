@@ -7,7 +7,7 @@ your Plone add-ons using your favorite editor/IDE:
     plone:
       image: eeacms/plone
       ports:
-      - "80:80"
+      - "8080:8080"
       environment:
       - SOURCE_EEA_PDF=git https://github.com/collective/eea.pdf.git pushurl=git@github.com:collective/eea.pdf.git
       - BUILDOUT_EGGS=eea.pdf

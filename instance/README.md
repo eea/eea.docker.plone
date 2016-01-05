@@ -6,6 +6,10 @@ Docker image for Plone with `plone.recipe.zope2instance` full support
 This image is generic, thus you can obviously re-use it within
 your non-related EEA projects.
 
+### Warning
+
+For security reasons, latest builds of this image run Plone on port **8080** instead
+of **80**. Please update your deployment accordingly.
 
 ## Supported tags and respective Dockerfile links
 
@@ -17,26 +21,9 @@ your non-related EEA projects.
   - `:4.3.6-hotfix20150910` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/4.3.6-hotfix20150910/instance/Dockerfile)
   - `:4.3.6` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/4.3.6/instance/Dockerfile)
 
+### Changes
 
-## Changelog
-
-### 5.0 (2015-09-29)
-
-- Added tag for Plone 5.0
-
-### 4.3.7 (2015-09-29)
-
-- Added tag for Plone 4.3.7
-
-### 4.3.6-hotfix20150910 (2015-09-11)
-
-- Added Products.PloneHotfix20150910
-
-### 4.3.6 (2015-08-10)
-
-
-- Initial public release based on Plone 4.3.6
-
+ - [CHANGELOG.md](https://github.com/eea/eea.docker.plone/blob/master/CHANGELOG.md)
 
 ## Base docker image
 
@@ -60,7 +47,7 @@ recipe package so it is advised that you check it out.
 
 ### Run with basic configuration
 
-    $ docker run -p 8080:80 eeacms/plone
+    $ docker run -p 8080:8080 eeacms/plone
 
 The above will first download the images (first time) and than exposing plone on the host port 8080. Now go to `http://<yourserverip>:8080` to see Plone in action.
 
@@ -72,7 +59,7 @@ The image is built using a bare [base.cfg](https://github.com/eea/eea.docker.plo
     [instance]
     recipe = plone.recipe.zope2instance
     user = admin:admin
-    http-address = 80
+    http-address = 8080
     effective-user = zope-www
     eggs =
       Pillow
@@ -81,7 +68,7 @@ The image is built using a bare [base.cfg](https://github.com/eea/eea.docker.plo
     ...
 
 `plone` will therefore run inside the container with the default parameters given
-by the recipe, with some little customization, such as listening on `port 80`.
+by the recipe, with some little customization, such as `effective-user`.
 
 ### Extend configuration through environment variables
 
@@ -91,7 +78,7 @@ Environment variables can be supplied either via an `env_file` with the `--env-f
 
 or via the `--env` flag
 
-    $ docker run --env BUILDOUT_HTTP_ADDRESS="8080" eeacms/plone
+    $ docker run --env BUILDOUT_HTTP_ADDRESS="8081" eeacms/plone
 
 It is **very important** to know that the environment variables supplied are translated
 into `zc.buildout` configuration. For each variable with the prefix `BUILDOUT_` there will be
@@ -199,7 +186,7 @@ Below is an example of `docker-compose.yml` file for `plone` used as a `ZEO` cli
     plone:
       image: eeacms/plone
       ports:
-      - "80:80"
+      - "8080:8080"
       links:
       - zeoserver
       environment:
@@ -216,7 +203,7 @@ Below is an example of `docker-compose.yml` file for `plone` used as a `RelStora
     plone:
       image: eeacms/plone
       ports:
-      - "80:80"
+      - "8080:8080"
       links:
       - postgres
       environment:
@@ -240,7 +227,7 @@ Add the following code within `docker-compose.yml` to develop `eea.pdf` add-on:
     plone:
       image: eeacms/plone
       ports:
-      - "80:80"
+      - "8080:8080"
       environment:
       - SOURCE_EEA_PDF=git https://github.com/collective/eea.pdf.git pushurl=git@github.com:collective/eea.pdf.git
       - BUILDOUT_EGGS=eea.pdf
