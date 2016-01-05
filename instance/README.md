@@ -18,7 +18,6 @@ of **80**. Please update your deployment accordingly.
   - `:5.0` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/5.0/instance/Dockerfile)
   - `:4.x` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/4.x/instance/Dockerfile)
   - `:4.3.7` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/4.3.7/instance/Dockerfile)
-  - `:4.3.6-hotfix20150910` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/4.3.6-hotfix20150910/instance/Dockerfile)
   - `:4.3.6` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/4.3.6/instance/Dockerfile)
 
 ### Changes
