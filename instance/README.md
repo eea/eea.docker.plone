@@ -152,7 +152,10 @@ of Plone with your custom versions of packages based on this image:
     FROM eeacms/plone
 
     COPY base.cfg /opt/zope/base.cfg
+
+    USER root
     RUN ./install.sh
+    USER zope-www
 
 and then run
 
