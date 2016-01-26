@@ -231,6 +231,7 @@ Add the following code within `docker-compose.yml` to develop `eea.pdf` add-on:
       ports:
       - "8080:8080"
       environment:
+      - DEBUG=on
       - SOURCE_EEA_PDF=git https://github.com/collective/eea.pdf.git pushurl=git@github.com:collective/eea.pdf.git
       - BUILDOUT_EGGS=eea.pdf
       volumes:
@@ -263,6 +264,11 @@ If you need to re-run buildout before Plone start, then use the `docker-compose 
     $ docker-compose up -d
     $ docker-compose logs
 
+### Debug mode
+
+In order to start Plone in debug mode (fg) you need to set `DEBUG=on` environment variable
+
+    $ docker run -e DEBUG=on -p 8080:8080 eeacms/plone
 
 ## Persistent data as you wish
 
@@ -341,6 +347,9 @@ Also, to provide `[sources]` entries, use `SOURCE_` prefix, like:
 
     SOURCE_EEA_PDF=git https://github.com/collective/eea.pdf.git
 
+To start Plone in debug mode (`fg`) use `DEBUG=on` environment variable like:
+
+    $ docker run -e DEBUG=on eeacms/plone
 
 ## Copyright and license
 

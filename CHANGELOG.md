@@ -1,5 +1,9 @@
 # Changelog
 
+## 2016-01-24
+
+- Possibility to start Plone in foreground (`fg`) by setting `DEBUG=on` env
+
 ## 2016-01-05
 
 - Security update: All processes inside container starts with **zope-www** user.
