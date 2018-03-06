@@ -1,5 +1,7 @@
 # Plone ready to run Docker image
 
+**DEPRECATED** use [Plone official docker image](https://hub.docker.com/_/plone/)
+
 Docker image for Plone with `plone.recipe.zope2instance` full support
 (supports all plone.recipe.zope2instance options as docker environment variables).
 
