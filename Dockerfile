@@ -1,4 +1,4 @@
-FROM plone:5.2.0
+FROM plone:5.2.0-python2
 LABEL maintainer="EEA: IDM2 A-Team <eea-edw-a-team-alerts@googlegroups.com>"
 
 RUN mv /docker-entrypoint.sh /plone-entrypoint.sh \
