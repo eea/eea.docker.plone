@@ -1,0 +1,98 @@
+version: "2"
+services:
+  haproxy:
+    image: eeacms/haproxy:1.8-1.2
+    ports:
+    - 2080:8080
+    - 1936:1936
+    depends_on:
+    - plone
+    environment:
+      FRONTEND_PORT: "8080"
+      BACKENDS_PORT: "8080"
+      BACKENDS: "plone"
+      DNS_ENABLED: "True"
+      TZ: "Europe/Copenhagen"
+
+  shell:
+    build: .
+    depends_on:
+      - memcached
+      - postfix
+      - zeo
+      # - postgres
+    environment:
+      # ZOPE_MODE: "rel_client"
+      ZOPE_MODE: "zeo_async"
+      TZ: "Europe/Copenhagen"
+    tty: true
+    stdin_open: true
+    command: cat
+    ports:
+    - 3080:8080
+
+  plone:
+    build: .
+    depends_on:
+      - memcached
+      - postfix
+      - zeo
+      # - postgres
+    environment:
+      # ZOPE_MODE: "rel_client"
+      ZOPE_MODE: "zeo_client"
+      TZ: "Europe/Copenhagen"
+
+  zeo:
+    build: .
+    depends_on:
+    - memcached
+    - postfix
+    # - postgres
+    environment:
+      # ZOPE_MODE: "rel_client"
+      ZOPE_MODE: "zeo"
+      TZ: "Europe/Copenhagen"
+    volumes:
+      - ./data:/data
+
+  async:
+    build: .
+    depends_on:
+    - memcached
+    - postfix
+    # - postgres
+    environment:
+      # ZOPE_MODE: "rel_async"
+      ZOPE_MODE: "zeo_async"
+      TZ: "Europe/Copenhagen"
+
+  # postgres:
+  #   image: eeacms/postgres:9.6-3.5
+  #   environment:
+  #     POSTGRES_DBNAME: "datafs zasync"
+  #     POSTGRES_DBUSER: "zope"
+  #     POSTGRES_DBPASS: "zope"
+  #     POSTGRES_USER: "postgres"
+  #     POSTGRES_PASSWORD: "postgres"
+  #     TZ: "Europe/Bucharest"
+  #   volumes:
+  #   - data:/var/lib/postgresql/data
+
+  memcached:
+    image: memcached:1.5.12
+    command:
+    - "-m"
+    - "1024"
+    environment:
+      TZ: "Europe/Copenhagen"
+
+  postfix:
+    image: eeacms/postfix:2.10-3.3
+    environment:
+      MTP_HOST: "example.com"
+      TZ: "Europe/Copenhagen"
+
+volumes:
+  data:
+    driver: local
