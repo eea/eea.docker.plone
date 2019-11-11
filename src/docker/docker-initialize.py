@@ -2,7 +2,7 @@
 
 import os
 from contextlib import closing
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from shutil import copy
 
 
@@ -53,7 +53,7 @@ class Environment(object):
         if not self._environment:
             url = "http://rancher-metadata/latest/self/stack/environment_name"
             try:
-                with closing(urllib2.urlopen(url)) as conn:
+                with closing(urllib.request.urlopen(url)) as conn:
                     self._environment = conn.read()
             except Exception as err:
                 self.log("Couldn't get environment from rancher-metadata: %s.", err)
@@ -78,7 +78,7 @@ class Environment(object):
     def log(self, msg='', *args):
         """ Log message to console
         """
-        print msg % args
+        print((msg % args))
 
     def zope_mode(self):
         """ Zope mode
