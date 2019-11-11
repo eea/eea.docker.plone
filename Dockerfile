@@ -2,8 +2,8 @@ FROM plone:5.2.0-python2
 LABEL maintainer="EEA: IDM2 A-Team <eea-edw-a-team-alerts@googlegroups.com>"
 
 RUN mv /docker-entrypoint.sh /plone-entrypoint.sh \
- && mv -v versions.cfg plone-versions.cfg \
- && mv -v /plone/instance/buildout.cfg /plone/instance/buildout-core.cfg
+ && mv /docker-initialize.py /plone_initialize.py \
+ && mv -v /plone/instance/buildout.cfg /plone/instance/plone-buildout.cfg
 
 COPY src/docker/* /
 COPY src/plone/* /plone/instance/

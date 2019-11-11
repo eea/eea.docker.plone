@@ -2,15 +2,17 @@
 
 import os
 from contextlib import closing
-import urllib2
+import urllib.request, urllib.error, urllib.parse
+from plone_initialize import Environment as PloneEnvironment
 from shutil import copy
 
 
-class Environment(object):
+class Environment(PloneEnvironment):
     """ Configure container via environment variables
     """
-    def __init__(self, env=os.environ):
-        self.env = env
+    def __init__(self, **kwargs):
+        super(Environment, self).__init__(**kwargs)
+
         self.threads = self.env.get('ZOPE_THREADS', '')
         self.fast_listen = self.env.get('ZOPE_FAST_LISTEN', '')
         self.force_connection_close = self.env.get('ZOPE_FORCE_CONNECTION_CLOSE', '')
@@ -34,6 +36,7 @@ class Environment(object):
 
         self.mode = mode
         self.zope_conf = conf
+        self.cors_conf = "/plone/instance/parts/%s/etc/package-includes/999-additional-overrides.zcml" % mode
 
         self.graylog = self.env.get('GRAYLOG', '')
         self.facility = self.env.get('GRAYLOG_FACILITY', self.mode)
@@ -53,7 +56,7 @@ class Environment(object):
         if not self._environment:
             url = "http://rancher-metadata/latest/self/stack/environment_name"
             try:
-                with closing(urllib2.urlopen(url)) as conn:
+                with closing(urllib.request.urlopen(url)) as conn:
                     self._environment = conn.read()
             except Exception as err:
                 self.log("Couldn't get environment from rancher-metadata: %s.", err)
@@ -78,7 +81,7 @@ class Environment(object):
     def log(self, msg='', *args):
         """ Log message to console
         """
-        print msg % args
+        print((msg % args))
 
     def zope_mode(self):
         """ Zope mode
@@ -185,6 +188,8 @@ class Environment(object):
     def setup(self):
         """ Configure
         """
+        super(Environment, self).setup()
+
         self.zope_mode()
         self.zope_log()
         self.zope_threads()

@@ -1,6 +1,6 @@
-# Plone 5 (Python 3) with RelStorage, RestAPI, Memcached, Async, Graylog, Sentry and more support
+# Plone 5 (Python 3) with RelStorage, RestAPI, Memcached, Async, Graylog, Sentry support (and more)
 
-Plone 5 with built-in support for:
+Plone 5 (Python 3) with built-in support for:
 * RelStorage
 * RestAPI
 * Memcached
