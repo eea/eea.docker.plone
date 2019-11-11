@@ -3,14 +3,16 @@
 import os
 from contextlib import closing
 import urllib.request, urllib.error, urllib.parse
+from plone_initialize import Environment as PloneEnvironment
 from shutil import copy
 
 
-class Environment(object):
+class Environment(PloneEnvironment):
     """ Configure container via environment variables
     """
-    def __init__(self, env=os.environ):
-        self.env = env
+    def __init__(self, **kwargs):
+        super(Environment, self).__init__(**kwargs)
+
         self.threads = self.env.get('ZOPE_THREADS', '')
         self.fast_listen = self.env.get('ZOPE_FAST_LISTEN', '')
         self.force_connection_close = self.env.get('ZOPE_FORCE_CONNECTION_CLOSE', '')
@@ -185,6 +187,8 @@ class Environment(object):
     def setup(self):
         """ Configure
         """
+        super(Environment, self).setup()
+
         self.zope_mode()
         self.zope_log()
         self.zope_threads()
