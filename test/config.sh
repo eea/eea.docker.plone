@@ -6,6 +6,11 @@ globalTests+=(
 	cve-2014--shellshock
 	no-hard-coded-passwords
 	override-cmd
+	plone-basics
+	plone-addons
+	plone-cors
+	plone-versions
+	plone-zeoclient
 )
 
 # for "explicit" images, only run tests that are explicitly specified for that image/variant
@@ -24,13 +29,6 @@ testAlias+=(
 )
 
 imageTests+=(
-	[plone]='
-		plone-basics
-		plone-addons
-		plone-cors
-		plone-versions
-		plone-zeoclient
-	'
 # example onbuild
 #	[python:onbuild]='
 #		py-onbuild
