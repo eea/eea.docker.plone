@@ -2,7 +2,7 @@
 
 import os
 from contextlib import closing
-import urllib.request, urllib.error, urllib.parse
+import urllib2
 from plone_initialize import Environment as PloneEnvironment
 from shutil import copy
 
@@ -56,7 +56,7 @@ class Environment(PloneEnvironment):
         if not self._environment:
             url = "http://rancher-metadata/latest/self/stack/environment_name"
             try:
-                with closing(urllib.request.urlopen(url)) as conn:
+                with closing(urllib2.urlopen(url)) as conn:
                     self._environment = conn.read()
             except Exception as err:
                 self.log("Couldn't get environment from rancher-metadata: %s.", err)
