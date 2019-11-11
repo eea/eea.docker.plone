@@ -1,0 +1,17 @@
+Fixing permissions for external /data volumes
+Using bin/standalone
+
+[buildout]
+extends = develop.cfg
+develop += src/eea.facetednavigation
+eggs += eea.facetednavigation
+zcml += eea.facetednavigation-meta
+
+[plonesite]
+enabled = True
+site-id = plone
+profiles += eea.facetednavigation:universal
+
+[versions]
+eea.facetednavigation=13.3
+plone.restapi=5.0.0
