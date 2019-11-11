@@ -25,7 +25,19 @@ This image is generic, thus you can obviously re-use it within your own projects
 
 ## Simple Usage
 
+### RestAPI
+
+    $ docker run -it --rm -p 80:8080 -e SITE=api eeacms/plone
+
+    $ curl -i http://localhost/api -H 'Accept: application/json'
+
+### ZEO
+
     $ docker-compose up -d
+
+### RelStorage (PostgreSQL)
+
+    $ ZOPE_MODE=rel_client docker-compose up -d
 
 Now, ask for http://localhost/ in your workstation web browser and add a Plone site (default credentials `admin:admin`).
 
@@ -71,7 +83,7 @@ and then run
 
 ## Supported environment variables
 
-* `ZOPE_MODE` Can be `zeo`, `standalone`, `zeo_client`, `zeo_async`,  `rel_client`, `rel_async`. Default `standalone`
+* `ZOPE_MODE` Can be `standalone`, `zeo_client`, `zeo_async`,  `rel_client`, `rel_async`. Default `standalone`
 * `ZOPE_THREADS` Configure zserver-threads. Default `2` (e.g.: `ZOPE_THREADS=4`)
 * `ZOPE_FAST_LISTEN` Set to `off` to defer opening of the HTTP socket until the end of the Zope startup phase. Defaults to `off` (e.g.: `ZOPE_FAST_LISTEN=on`)
 * `ZOPE_FORCE_CONNECTION_CLOSE` Set to `on` to enforce Zope to set `Connection: close header`. Default `on` (e.g.: `ZOPE_FORCE_CONNECTION_CLOSE=off`)
@@ -83,5 +95,7 @@ and then run
 * `RELSTORAGE_KEEP_HISTORY` history-preserving database schema, `false` by default (e.g.: `RELSTORAGE_KEEP_HISTORY=true`)
 * `SERVER_NAME` Usually the application URL without scheme (e.g.: `SERVER_NAME=staging.example.com`)
 * `ENVIRONMENT`, `SENTRY_ENVIRONMENT` Override environment. Leave empty to automatically get it from `rancher-metadata`
-* `_APP_VERSION` Your custom application version (e.g: `APP_VERSION=5.1.5-1.0`)
+* `APP_VERSION` Your custom application version (e.g: `APP_VERSION=5.1.5-1.0`)
 * `SENTRY_DSN` Send python tracebacks to sentry.io (e.g.: `SENTRY_DSN=https://<public_key>:<secret_key>@sentry.io`)
+
+See also **Plone** [Supported Environment Variables](https://github.com/plone/plone.docker#for-advanced-usage)

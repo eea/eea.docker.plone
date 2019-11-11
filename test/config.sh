@@ -11,6 +11,7 @@ globalTests+=(
 	plone-cors
 	plone-versions
 	plone-zeoclient
+	plone-relstorage
 )
 
 # for "explicit" images, only run tests that are explicitly specified for that image/variant
