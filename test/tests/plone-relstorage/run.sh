@@ -5,13 +5,13 @@ dir="$(dirname "$(readlink -f "$BASH_SOURCE")")"
 
 image="$1"
 
-PLONE_TEST_SLEEP=3
-PLONE_TEST_TRIES=5
+PLONE_TEST_SLEEP=6
+PLONE_TEST_TRIES=30
 POSTGRES_IMAGE="eeacms/postgres:9.6-3.5"
 
 # Start PostgreSQL server
 zname="postgres-container-$RANDOM-$RANDOM"
-zid="$(docker run -d --name "$zname" -e POSTGRES_DBNAME=datafs -e POSTGRES_DBUSER=zope -e POSTGRES_DBPASS=zope -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres $POSTGRES_IMAGE)"
+zid="$(docker run -d --name "$zname" -e POSTGRES_DBNAME="datafs zasync" -e POSTGRES_DBUSER=zope -e POSTGRES_DBPASS=zope -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres $POSTGRES_IMAGE)"
 
 # Start Plone as RelStorage Client
 pname="plone-container-$RANDOM-$RANDOM"
