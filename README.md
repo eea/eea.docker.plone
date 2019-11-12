@@ -39,9 +39,19 @@ This image is generic, thus you can obviously re-use it within your own projects
 
     $ ZOPE_MODE=rel_client docker-compose up -d
 
-Now, ask for http://localhost/ in your workstation web browser and add a Plone site (default credentials `admin:admin`).
+### Custom image and PostgreSQL backend
 
-See [docker-compose.yml](http://github.com/eeacms/eea.docker.plone) for more details and more about Plone at [plone](https://hub.docker.com/_/plone)
+    $ IMAGE=eeacms/plone:5.1.x ZOPE_MODE=rel_client docker-compose up -d
+
+You can also dump the environment variables to `.env` file and run `docker-compose` as usual:
+
+    $ cp .env.example .env
+    $ vim .env
+    $ docker-compose up -d
+
+Now, ask for http://localhost:8080/ in your workstation web browser and add a Plone site (default credentials `admin:admin`).
+
+See [docker-compose.yml](https://github.com/eea/eea.docker.plone/blob/master/docker-compose.yml) for more details and more about Plone at [plone](https://hub.docker.com/_/plone)
 
 ## Extending this image
 
