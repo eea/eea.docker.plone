@@ -1,9 +1,9 @@
-version: "2"
+version: "2.1"
 services:
   haproxy:
-    image: eeacms/haproxy:1.8-1.2
+    image: eeacms/haproxy:1.8-1.3
     ports:
-    - 2080:8080
+    - 80:8080
     - 1936:1936
     depends_on:
     - plone
@@ -15,15 +15,15 @@ services:
       TZ: "Europe/Copenhagen"
 
   shell:
-    build: .
+    image: "${IMAGE:-eeacms/plone}"
     depends_on:
       - memcached
       - postfix
       - zeo
-      # - postgres
+      - postgres
     environment:
       # ZOPE_MODE: "rel_client"
-      ZOPE_MODE: "zeo_async"
+      ZOPE_MODE: "${ZOPE_MODE:-zeo_client}"
       TZ: "Europe/Copenhagen"
     tty: true
     stdin_open: true
@@ -32,52 +32,38 @@ services:
     - 3080:8080
 
   plone:
-    build: .
+    image: "${IMAGE:-eeacms/plone}"
     depends_on:
       - memcached
       - postfix
       - zeo
-      # - postgres
+      - postgres
     environment:
       # ZOPE_MODE: "rel_client"
-      ZOPE_MODE: "zeo_client"
+      ZOPE_MODE: "${ZOPE_MODE:-zeo_client}"
       TZ: "Europe/Copenhagen"
 
   zeo:
-    build: .
-    depends_on:
-    - memcached
-    - postfix
-    # - postgres
+    image: "${IMAGE:-eeacms/plone}"
     environment:
-      # ZOPE_MODE: "rel_client"
       ZOPE_MODE: "zeo"
       TZ: "Europe/Copenhagen"
     volumes:
-      - ./data:/data
+      - zeo:/data
+    command:
+      - zeo
 
-  async:
-    build: .
-    depends_on:
-    - memcached
-    - postfix
-    # - postgres
+  postgres:
+    image: eeacms/postgres:9.6-3.5
     environment:
-      # ZOPE_MODE: "rel_async"
-      ZOPE_MODE: "zeo_async"
-      TZ: "Europe/Copenhagen"
-
-  # postgres:
-  #   image: eeacms/postgres:9.6-3.5
-  #   environment:
-  #     POSTGRES_DBNAME: "datafs zasync"
-  #     POSTGRES_DBUSER: "zope"
-  #     POSTGRES_DBPASS: "zope"
-  #     POSTGRES_USER: "postgres"
-  #     POSTGRES_PASSWORD: "postgres"
-  #     TZ: "Europe/Bucharest"
-  #   volumes:
-  #   - data:/var/lib/postgresql/data
+      POSTGRES_DBNAME: "datafs zasync"
+      POSTGRES_DBUSER: "zope"
+      POSTGRES_DBPASS: "zope"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      TZ: "Europe/Bucharest"
+    volumes:
+    - postgres:/var/lib/postgresql/data
 
   memcached:
     image: memcached:1.5.12
@@ -94,5 +80,7 @@ services:
       TZ: "Europe/Copenhagen"
 
 volumes:
-  data:
+  zeo:
+    driver: local
+  postgres:
     driver: local
