@@ -13,15 +13,30 @@ This image is generic, thus you can obviously re-use it within your own projects
 
 ## Supported tags and respective Dockerfile links
 
-  - [Tags](https://hub.docker.com/r/eeacms/plone/tags/)
+* `:latest` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/master/Dockerfile)
+* `:5.2.x` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/5.2.x/Dockerfile)
+* `:5.2.x-python2` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/5.2.x-python2/Dockerfile)
+* `:5.1.x` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/5.1.x/Dockerfile)
+
+### Stable and immutable tags
+
+* `:5.2.0-1` [*Dockerfile*](https://github.com/eea/eea.docker.plone/tree/5.2.0-1/Dockerfile)
+* `:5.2.0-python2-1` [*Dockerfile*](https://github.com/eea/eea.docker.plone/tree/5.2.0-python2-1/Dockerfile)
+* `:5.1.6-1` [*Dockerfile*](https://github.com/eea/eea.docker.plone/tree/5.1.6-1/Dockerfile)
+
+See [older versions](https://github.com/eea/eea.docker.plone/releases)
+
+### Changes
+
+* [CHANGELOG.md](https://github.com/eea/eea.docker.plone/blob/master/CHANGELOG.md)
 
 ## Base docker image
 
- - [hub.docker.com](https://hub.docker.com/r/eeacms/plone/)
+* [hub.docker.com](https://hub.docker.com/r/eeacms/plone/)
 
 ## Source code
 
-  - [github.com](http://github.com/eeacms/eea.docker.plone)
+* [github.com](http://github.com/eeacms/eea.docker.plone)
 
 ## Simple Usage
 
@@ -109,3 +124,18 @@ and then run
 * `SENTRY_DSN` Send python tracebacks to sentry.io (e.g.: `SENTRY_DSN=https://<public_key>:<secret_key>@sentry.io`)
 
 See also **Plone** [Supported Environment Variables](https://github.com/plone/plone.docker#for-advanced-usage)
+
+## Copyright and license
+
+The Initial Owner of the Original Code is European Environment Agency (EEA).
+All Rights Reserved.
+
+The Original Code is free software;
+you can redistribute it and/or modify it under the terms of the GNU
+General Public License as published by the Free Software Foundation;
+either version 2 of the License, or (at your option) any later
+version.
+
+## Funding
+
+[European Environment Agency (EU)](http://eea.europa.eu)
