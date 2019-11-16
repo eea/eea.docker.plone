@@ -3,6 +3,7 @@
 Plone 5 (Python 3) with built-in support for:
 * RelStorage
 * RestAPI
+* LDAP
 * Memcached
 * zc.async
 * Graylog
