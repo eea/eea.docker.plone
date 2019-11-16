@@ -17,6 +17,7 @@ buildDeps="
   libxml2-dev
   libxslt-dev
   libxslt1-dev
+  libyaml-dev
   libz-dev
   zlib1g-dev
   subversion
@@ -36,6 +37,7 @@ runDeps="
   libssl1.0-dev
   libxml2
   libxslt1.1
+  libyaml-0-2
   lynx
   poppler-utils
   subversion
