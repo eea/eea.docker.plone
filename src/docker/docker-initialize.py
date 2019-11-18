@@ -41,8 +41,6 @@ class Environment(PloneEnvironment):
         self.graylog = self.env.get('GRAYLOG', '')
         self.facility = self.env.get('GRAYLOG_FACILITY', self.mode)
 
-        self.version = self.env.get('APP_VERSION', '')
-        self.name = self.env.get('SERVER_NAME', '')
         self.sentry = self.env.get('SENTRY_DSN', '')
         self._environment = self.env.get('ENVIRONMENT',
                             self.env.get('SENTRY_ENVIRONMENT', ''))
@@ -109,12 +107,6 @@ class Environment(PloneEnvironment):
             return
 
         self.log("Sending errors to sentry. Environment: %s", self.environment)
-        if 'raven.contrib.zope' in self.conf:
-            return
-
-        template = SENTRY_TEMPLATE % (self.name, self.version, self.environment)
-        self.conf = "%import raven.contrib.zope\n" + self.conf.replace('</logfile>', '</logfile>%s' % template)
-
 
     def zope_log(self):
         """ Zope logging
@@ -209,15 +201,6 @@ GRAYLOG_TEMPLATE = """
     server %s
     facility %s
   </graylog>
-"""
-
-SENTRY_TEMPLATE = """
-  <sentry>
-    level ERROR
-    site %s
-    release %s
-    environment %s
-  </sentry>
 """
 
 def initialize():
