@@ -52,7 +52,7 @@ services:
     - postgres:/var/lib/postgresql/data
 
   memcached:
-    image: memcached:1.5.12
+    image: memcached:1.5.20
     command:
     - "-m"
     - "1024"

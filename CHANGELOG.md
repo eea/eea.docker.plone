@@ -2,8 +2,9 @@
 
 ## Unreleased
 
-* LDAP
-* Sentry
+* LDAP (pas.plugin.ldap)
+* Sentry (eea.sentry)
+* Cache (eea.cache)
 
 ## 2019-11-13 (5.1.6-1, 5.2.0-1, 5.2.0-python2-1)
 
@@ -12,5 +13,5 @@
 * Plone 5.1, 5.2 (Python2, Python3)
 * ZEO
 * RelStorage
-* RestAPI
-* Faceted Navigation
+* RestAPI (plone.restapi)
+* Faceted Navigation (eea.facetednavigation)
