@@ -1,5 +1,6 @@
 Fixing permissions for external /data volumes
 Using bin/standalone
+Sending logs to graylog: 'logcentral.eea.europa.eu:12201' as facilty: 'eea.docker.plone'
 
 [buildout]
 extends = develop.cfg
