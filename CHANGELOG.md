@@ -3,6 +3,7 @@
 ## Unreleased
 
 * LDAP (pas.plugin.ldap)
+* Graylog (eea.graylogger)
 * Sentry (eea.sentry)
 * Cache (eea.cache)
 
