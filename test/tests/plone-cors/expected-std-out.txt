@@ -1,5 +1,6 @@
 Fixing permissions for external /data volumes
 Using bin/zeo_client
+Sending logs to graylog: 'logcentral.eea.europa.eu:12201' as facilty: 'eea.docker.plone'
 <configure
   xmlns="http://namespaces.zope.org/zope">
   <configure
