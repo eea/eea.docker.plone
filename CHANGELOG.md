@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 2019-12-02 (5.1.6-2, 5.2.0-2, 5.2.0-python2-2)
 
 * LDAP (pas.plugin.ldap)
 * Graylog (eea.graylogger)
