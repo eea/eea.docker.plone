@@ -1,5 +1,10 @@
 # Changelog
 
+## 2019-12-06 (5.1.6-3, 5.2.0-3, 5.2.0-python2-3)
+
+* zodbverify
+* zodbupdate
+
 ## 2019-12-02 (5.1.6-2, 5.2.0-2, 5.2.0-python2-2)
 
 * LDAP (pas.plugin.ldap)
