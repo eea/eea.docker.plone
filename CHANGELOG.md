@@ -1,5 +1,15 @@
 # Changelog
 
+## 2019-12-13 (5.1.6-5, 5.2.0-5, 5.2.0-python2-5)
+
+* Patch zodbverify to be aware of eea.aliases
+* eea.aliases
+* eea.faceted.inheritance
+
+## 2019-12-10 (5.1.6-4, 5.2.0-4, 5.2.0-python2-4)
+
+* Patch zodbverify to register plone.dexterity.schema.generated utility
+
 ## 2019-12-06 (5.1.6-3, 5.2.0-3, 5.2.0-python2-3)
 
 * zodbverify
