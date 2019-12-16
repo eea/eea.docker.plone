@@ -1,5 +1,10 @@
 # Changelog
 
+## 2019-12-16 (5.1.6-6, 5.2.0-6, 5.2.0-python2-6)
+
+* plone.app.upgrade: `2.0.31`
+* Fix /data volume permissions when volume is external (e.g.: `rancher-nfs`)
+
 ## 2019-12-13 (5.1.6-5, 5.2.0-5, 5.2.0-python2-5)
 
 * Patch zodbverify to be aware of eea.aliases
