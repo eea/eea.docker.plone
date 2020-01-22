@@ -1,5 +1,9 @@
 # Changelog
 
+## 2020-01-22 (5.1.6-7, 5.2.0-7, 5.2.0-python2-7)
+
+* Products.PloneHotfix20200121 - 1.0
+
 ## 2019-12-16 (5.1.6-6, 5.2.0-6, 5.2.0-python2-6)
 
 * plone.app.upgrade: `2.0.31`
