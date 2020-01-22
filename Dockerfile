@@ -1,4 +1,4 @@
-FROM plone:5.2.0
+FROM plone:5.1.6
 LABEL maintainer="EEA: IDM2 A-Team <eea-edw-a-team-alerts@googlegroups.com>"
 
 ENV GRAYLOG=logcentral.eea.europa.eu:12201 \
@@ -6,6 +6,7 @@ ENV GRAYLOG=logcentral.eea.europa.eu:12201 \
 
 RUN mv /docker-entrypoint.sh /plone-entrypoint.sh \
  && mv /docker-initialize.py /plone_initialize.py \
+ && mv /plone/instance/versions.cfg /plone/instance/plone-versions.cfg \
  && mv -v /plone/instance/buildout.cfg /plone/instance/plone-buildout.cfg
 
 COPY src/docker/* /
