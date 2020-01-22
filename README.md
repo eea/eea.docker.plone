@@ -21,9 +21,9 @@ This image is generic, thus you can obviously re-use it within your own projects
 
 ### Stable and immutable tags
 
-* `:5.2.0-6` [*Dockerfile*](https://github.com/eea/eea.docker.plone/tree/5.2.0-6/Dockerfile)
-* `:5.2.0-python2-6` [*Dockerfile*](https://github.com/eea/eea.docker.plone/tree/5.2.0-python2-6/Dockerfile)
-* `:5.1.6-6` [*Dockerfile*](https://github.com/eea/eea.docker.plone/tree/5.1.6-6/Dockerfile)
+* `:5.2.0-7` [*Dockerfile*](https://github.com/eea/eea.docker.plone/tree/5.2.0-7/Dockerfile)
+* `:5.2.0-python2-7` [*Dockerfile*](https://github.com/eea/eea.docker.plone/tree/5.2.0-python2-7/Dockerfile)
+* `:5.1.6-7` [*Dockerfile*](https://github.com/eea/eea.docker.plone/tree/5.1.6-7/Dockerfile)
 
 See [older versions](https://github.com/eea/eea.docker.plone/releases)
 
