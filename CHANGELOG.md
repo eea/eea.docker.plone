@@ -1,5 +1,9 @@
 # Changelog
 
+## 2020-02-03 (5.2.1-1)
+
+* Upgrade to Plone 5.2.1
+
 ## 2020-01-22 (5.1.6-7, 5.2.0-7, 5.2.0-python2-7)
 
 * Products.PloneHotfix20200121 - 1.0
