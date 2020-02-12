@@ -5,6 +5,10 @@ pipeline {
     GIT_NAME = "eea.docker.plone"
   }
 
+  parameters {
+    string(defaultValue: '', description: 'Run tests with GIT_BRANCH env enabled', name: 'TARGET_BRANCH')
+  }
+  
   stages {
     stage('Build & Test') {
       steps {
