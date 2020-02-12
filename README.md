@@ -30,15 +30,15 @@ See [older versions](https://github.com/eea/eea.docker.plone/releases)
 
 ### Changes
 
-* [Github releases](https://github.com/eea/eea.docker.plone/releases)
+* `github.com:` [eea/eea.docker.plone/releases](https://github.com/eea/eea.docker.plone/releases)
 
 ## Base docker image
 
-* [hub.docker.com](https://hub.docker.com/r/eeacms/plone/)
+* `hub.docker.com:` [eeacms/plone](https://hub.docker.com/r/eeacms/plone/)
 
 ## Source code
 
-* [github.com](http://github.com/eeacms/eea.docker.plone)
+* `github.com:` [eea/eea.docker.plone](http://github.com/eea/eea.docker.plone)
 
 ## Simple Usage
 
