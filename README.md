@@ -2,7 +2,7 @@
 
 [![Build Status](https://ci.eionet.europa.eu/buildStatus/icon?job=Eionet/eea.docker.plone/master&subject=Build)](https://ci.eionet.europa.eu/blue/organizations/jenkins/Eionet%2Feea.docker.plone/activity/)
 [![Pipeline Status](https://ci.eionet.europa.eu/buildStatus/icon?job=Eionet/eea.pipeline.plone/master&subject=Pipeline)](https://ci.eionet.europa.eu/blue/organizations/jenkins/Eionet%2Feea.pipeline.plone/activity/)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/eea/eea.docker.plone)
+[![Release](https://img.shields.io/github/v/release/eea/eea.docker.plone)](https://github.com/eea/eea.docker.plone/releases)
 
 Plone 5 (Python 3) with built-in support for:
 * RelStorage
