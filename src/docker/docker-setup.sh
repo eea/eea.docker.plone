@@ -34,7 +34,7 @@ runDeps="
   libpng16-16
   libpq5
   librsvg2-bin
-  libssl1.0-dev
+  libssl-dev
   libxml2
   libxslt1.1
   libyaml-0-2
