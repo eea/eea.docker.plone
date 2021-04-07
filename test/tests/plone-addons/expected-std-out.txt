@@ -4,6 +4,7 @@ Sending logs to graylog: 'logcentral.eea.europa.eu:12201' as facilty: 'eea.docke
 
 [buildout]
 extends = develop.cfg
+find-links += 
 develop += src/eea.facetednavigation
 eggs += eea.facetednavigation
 zcml += eea.facetednavigation-meta
