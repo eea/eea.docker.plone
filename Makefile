@@ -10,6 +10,10 @@ SHELL:=bash
 MAKEFLAGS+=--warn-undefined-variables
 MAKEFLAGS+=--no-builtin-rules
 
+# Use local development modifications to the base compose configuration
+export COMPOSE_PATH_SEPARATOR=:
+export COMPOSE_FILE=docker-compose.yml:docker-compose.local.yml
+
 # Constants
 
 RANCHER_CLI_VERSION=0.6.8
@@ -36,6 +40,14 @@ RANCHER_EXEC_CMD=tmux a
 .PHONY: all
 all: ~/.rancher/cli.json install-pkgs
 
+.PHONY: run-db-daemon
+run-db-daemon: all
+	docker-compose up -d postgres
+	until docker-compose exec --user "postgres" postgres "pg_isready"
+	do
+	    sleep 0.5
+	done
+
 .PHONY: exec
 exec: bin/rancher
 	./bin/rancher-rsh $(RANCHER_EXEC_OPTS) "$(RANCHER_DESTINATION)" \
@@ -55,6 +67,13 @@ clean:
 # Real targets
 
 # DB restore
+var/log/postgresql-restore.log: postgresql.backup/datafs.gz
+	$(MAKE)  run-db-daemon
+	mkdir -pv "./$(dir $(@))"
+# Echo restore script commands for easier debugging
+	docker-compose exec --user="postgres" postgres bash -x \
+	        "/postgresql.restore/database-restore.sh" "datafs" |
+	    tee -a "./$(@)"
 postgresql.backup/datafs.gz:
 	export RANCHER_CATALOG_NAME="www-postgres"
 	export RANCHER_SERVICE_NAME="master"

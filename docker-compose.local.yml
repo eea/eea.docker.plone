@@ -1,0 +1,6 @@
+version: "2.1"
+services:
+
+  postgres:
+    volumes:
+    - "./postgresql.backup/:/postgresql.backup/"
