@@ -1,6 +1,2 @@
 .secret
 .env
-/var
-/bin/*
-!/bin/.gitignore
-/postgresql.backup

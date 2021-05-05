@@ -12,7 +12,8 @@ MAKEFLAGS+=--no-builtin-rules
 
 # Use local development modifications to the base compose configuration
 export COMPOSE_PATH_SEPARATOR=:
-export COMPOSE_FILE=docker-compose.yml:docker-compose.local.yml
+# Keep paths relative, `./docker-compose.local.yml` first
+export COMPOSE_FILE=./docker-compose.local.yml:../docker-compose.yml
 
 # Constants
 
