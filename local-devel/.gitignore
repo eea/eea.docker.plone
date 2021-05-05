@@ -2,3 +2,13 @@
 /bin/*
 !/bin/.gitignore
 /postgresql.backup
+/.venv
+/base.cfg
+/buildout-base.cfg
+/lxml_static.cfg
+/plone-buildout.cfg
+/plone-develop.cfg
+/.*.cfg
+/.plone.versioncheck.tracked.json
+/parts
+/data

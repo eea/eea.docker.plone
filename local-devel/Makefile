@@ -35,12 +35,23 @@ RANCHER_DESTINATION=$(RANCHER_STACK_PREFIX)@$(RANCHER_SERVICE_NAME).$(RANCHER_CA
 RANCHER_EXEC_OPTS=-it
 RANCHER_EXEC_CMD=tmux a
 
+# Version from `FROM plone:...` in `../Dockerfile`
+PLONE_VERSION=5.2.4
+
+# Process source files for use as prerequisites
+BUILDOUT_PLONE_CFGS=$(shell \
+    docker run --rm --entrypoint="bash" "plone:$(PLONE_VERSION)" -c "ls -d1 *.cfg")
+BUILDOUT_PLONE_OVERRIDEN_CFGS=buildout.cfg develop.cfg
+
 
 # Top-level targets
 
 .PHONY: all
-all: ~/.rancher/cli.json install-pkgs
+all: ~/.rancher/cli.json var/log/buildout-install.log
 
+.PHONY: run-debug
+run-debug: all var/log/postgresql-restore.log
+	./bin/rel_client fg
 .PHONY: run-db-daemon
 run-db-daemon: all
 	docker-compose up -d postgres
@@ -64,8 +75,43 @@ install-pkgs: var/log/apt-install-$(RANCHER_CATALOG_NAME)-$(RANCHER_SERVICE_NAME
 clean:
 	test '!' -e "./bin/rancher" || rm -rv "./bin/rancher"
 	test '!' -e ./var/log/apt-install-*.log || rm -rv ./var/log/apt-install-*.log
+	rm -rv "$(BUILDOUT_PLONE_CFGS)" "$(BUILDOUT_PLONE_OVERRIDEN_CFGS:%=plone-%)"
 
 # Real targets
+
+# Keep local Plone instance up to date
+var/log/buildout-install.log: \
+		.venv/bin/activate var/log/apt-install-local.log \
+		var/log/buildout-link-configs.log local.cfg
+	mkdir -pv "./$(dir $(@))"
+# Versions from `.../plone.docker/5.2/$(PLONE_VERSION)/debian/Dockerfile`
+	"./$(dir $(<))pip3" install -U --upgrade-strategy=eager \
+	        "zc.buildout==2.13.4" "setuptools==51.3.3" "wheel==0.36.2" |
+	    tee -a "./$(@)"
+	"./$(dir $(<))buildout" -c "./local.cfg" |
+	    tee -a "./$(@)"
+var/log/apt-install-local.log:
+	mkdir -pv "./$(dir $(@))"
+	sudo apt update | tee -a "./$(@)"
+	sudo apt install -y "libmemcached-dev" | tee -a "./$(@)"
+var/log/buildout-link-configs.log: plone-buildout.cfg ../src/plone/*.cfg
+	ln -sfv ../src/plone/*.cfg "./" | tee -a "./$(@)"
+# Extract buildout configuration from the base image
+# TODO: I'd prefer to do this with symlinks to the from the upstream source to better
+# support and test upstream contributions, but I couldn't quickly figure out where the
+# source is for these.
+plone-buildout.cfg:
+	for cfg_file in $(BUILDOUT_PLONE_CFGS)
+	do
+	    docker run --rm --entrypoint="cat" "plone:$(PLONE_VERSION)" \
+	            "./$${cfg_file}" >"./$${cfg_file}"
+	done
+	for override_file in $(BUILDOUT_PLONE_OVERRIDEN_CFGS)
+	do
+	    mv --backup=numbered -v "./$${override_file}" "./plone-$${override_file}"
+	done
+.venv/bin/activate:
+	python3 -m venv "./$(@:%/bin/activate=%/)"
 
 # DB restore
 var/log/postgresql-restore.log: postgresql.backup/datafs.gz
