@@ -10,10 +10,21 @@ SHELL:=bash
 MAKEFLAGS+=--warn-undefined-variables
 MAKEFLAGS+=--no-builtin-rules
 
-# Use local development modifications to the base compose configuration
-export COMPOSE_PATH_SEPARATOR=:
-# Keep paths relative, `./docker-compose.local.yml` first
-export COMPOSE_FILE=./docker-compose.local.yml:../docker-compose.yml
+# Defaults if not defined in `./.env`
+RANCHER_STACK_PREFIX=$(USER)
+PYTHON_EXECUTABLE=python3
+ZC_BUILDOUT_VERSION=2.13.4
+SETUPTOOLS_VERSION=51.3.3
+WHEEL_VERSION=0.36.2
+# Version from `FROM plone:...` in `../Dockerfile`
+PLONE_VERSION=5.2.4
+
+# Share environment variables between `$ make ...`, `$ docker-compose ...`, etc.:
+# https://lithic.tech/blog/2020-05/makefile-dot-env
+ifneq (,$(wildcard ./.env))
+    include .env
+    export
+endif
 
 # Constants
 
@@ -27,16 +38,12 @@ RANCHER_CLI_VERSION=0.6.8
 # Export Rancher CLI variables for easier recursive `$ make -e ...` invocation
 export RANCHER_CATALOG_NAME=www-eea
 # Use the developer's personal stack by default
-export RANCHER_STACK_PREFIX=$(USER)
 RANCHER_STACK=$(RANCHER_STACK_PREFIX)-$(RANCHER_CATALOG_NAME)
 export RANCHER_SERVICE_NAME=debug-instance
 RANCHER_DESTINATION=$(RANCHER_STACK_PREFIX)@$(RANCHER_SERVICE_NAME).$(RANCHER_CATALOG_NAME)
 # Re-attach to an existing tmux session by default
 RANCHER_EXEC_OPTS=-it
 RANCHER_EXEC_CMD=tmux a
-
-# Version from `FROM plone:...` in `../Dockerfile`
-PLONE_VERSION=5.2.4
 
 # Process source files for use as prerequisites
 BUILDOUT_PLONE_CFGS=$(shell \
@@ -132,7 +139,7 @@ postgresql.backup/datafs.gz: postgresql.backup/datafs.gz.update
 	        "rsync.$(RANCHER_STACK):/data/www-postgres/dump/$(notdir $(@))" \
 	        "./$(@).tmp"
 	mv -v "./$(@).tmp" "./$(@)"
-var/log/postgresql-up.log: ../docker-compose*.yml docker-compose*.yml
+var/log/postgresql-up.log: $(subst :, ,$(COMPOSE_FILE))
 	docker-compose stop postgres | tee -a "./$(@)"
 	docker-compose rm -f postgres | tee -a "./$(@)"
 	docker-compose up -d postgres | tee -a "./$(@)"
