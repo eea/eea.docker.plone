@@ -4,3 +4,5 @@ services:
   postgres:
     volumes:
     - "./postgresql.backup/:/postgresql.backup/"
+    ports:
+      - "127.0.0.1:${PORT_PREFIX:-51}432:5432"
