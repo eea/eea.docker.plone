@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# Move aside a file keeping numbered backups
+
+set -eu -o pipefail -O inherit_errexit
+PS4='${LINENO}+'
+set -x
+
+
+main() {
+    for orig_path in "$@"
+    do
+        mv --backup="numbered" -v \
+           $(mktemp -p "$(dirname "${orig_path}")" \
+                    "$(basename "${orig_path}")-tmp-XXXXXXXXXX") \
+           "${orig_path}"
+        rm -v "${orig_path}"
+    done
+}
+
+
+main "$@"

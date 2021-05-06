@@ -84,9 +84,12 @@ install-pkgs: var/log/apt-install-$(RANCHER_CATALOG_NAME)-$(RANCHER_SERVICE_NAME
 
 .PHONY: clean
 clean:
-	test '!' -e "./bin/rancher" || rm -rv "./bin/rancher"
-	test '!' -e ./var/log/apt-install-*.log || rm -rv ./var/log/apt-install-*.log
-	rm -rv "$(BUILDOUT_PLONE_CFGS)" "$(BUILDOUT_PLONE_OVERRIDEN_CFGS:%=plone-%)"
+	fusermount -u ./data/blobstorage/ || true
+# Delete everything that's not in VCS excepting checkouts or data that may take a long
+# time to get back.
+	git clean -f -x -e "src/" -e "var/" -e "postgresql.backup/" -e "*~" ./
+# Move aside log files that may be used as targets for recipes
+	find "./var/log/" -type f -exec "./bin/mv-backup" '{}' ';'
 
 # Real targets
 
