@@ -1,0 +1,3 @@
+# If newer than `./datafs.gz`,
+# then it will be updated from `rsync.$(RANCHER_STACK_PREFIX)-www-eea`:
+# `$ touch "./postgresql.backup/datafs.gz" && make "var/log/postgresql-restore.log"`

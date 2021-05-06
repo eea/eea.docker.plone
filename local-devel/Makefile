@@ -123,12 +123,12 @@ var/log/postgresql-restore.log: postgresql.backup/datafs.gz
 	docker-compose exec --user="postgres" postgres bash -x \
 	        "/postgresql.restore/database-restore.sh" "datafs" |
 	    tee -a "./$(@)"
-postgresql.backup/datafs.gz:
+postgresql.backup/datafs.gz: postgresql.backup/datafs.gz.update
 	export RANCHER_CATALOG_NAME="www-postgres"
 	export RANCHER_SERVICE_NAME="master"
 	$(MAKE) -e install-pkgs
 	mkdir -pv "./$(dir $(@))"
-	test '!' '(' -e "./$(@)" -a '!' -e "./$(@)" ')' || mv -v "./$(@)" "./$(@).tmp"
+	test '!' '(' -e "./$(@)" -a '!' -e "./$(@).tmp" ')' || mv -v "./$(@)" "./$(@).tmp"
 	rsync -avP --rsh "./bin/rancher-rsh" \
 	        "$(RANCHER_STACK_PREFIX)@$${RANCHER_SERVICE_NAME}.$${RANCHER_CATALOG_NAME}:/$(@)" \
 	        "./$(@).tmp"

@@ -1,7 +1,6 @@
 /var
 /bin/*
 !/bin/.gitignore
-/postgresql.backup
 /.venv
 /base.cfg
 /buildout-base.cfg
