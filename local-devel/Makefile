@@ -50,15 +50,13 @@ BUILDOUT_PLONE_OVERRIDEN_CFGS=buildout.cfg develop.cfg
 all: ~/.rancher/cli.json var/log/buildout-install.log
 
 .PHONY: run-debug
-run-debug: all var/log/postgresql-restore.log
+run-debug: all var/log/postgresql-restore.log run-db-daemon
 	./bin/rel_client fg
 .PHONY: run-db-daemon
 run-db-daemon: all
-	docker-compose up -d postgres
-	until docker-compose exec --user "postgres" postgres "pg_isready"
-	do
-	    sleep 0.5
-	done
+	docker-compose exec --user "postgres" postgres "pg_isready" ||
+	    ./bin/mv-backup "./var/log/postgresql-up.log"
+	$(MAKE) "var/log/postgresql-up.log"
 
 .PHONY: exec
 exec: bin/rancher
@@ -131,6 +129,14 @@ postgresql.backup/datafs.gz:
 	        "$(RANCHER_STACK_PREFIX)@$${RANCHER_SERVICE_NAME}.$${RANCHER_CATALOG_NAME}:/$(@)" \
 	        "./$(@).tmp"
 	mv -v "./$(@).tmp" "./$(@)"
+var/log/postgresql-up.log: ../docker-compose*.yml docker-compose*.yml
+	docker-compose stop postgres | tee -a "./$(@)"
+	docker-compose rm -f postgres | tee -a "./$(@)"
+	docker-compose up -d postgres | tee -a "./$(@)"
+	until docker-compose exec --user "postgres" postgres "pg_isready"
+	do
+	    sleep 0.5
+	done | tee -a "./$(@)"
 
 # Install commonly used packages, and only once to minimize Rancher CLI delay
 var/log/apt-install-$(RANCHER_CATALOG_NAME)-$(RANCHER_SERVICE_NAME).log: bin/rancher
