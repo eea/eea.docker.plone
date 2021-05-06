@@ -50,7 +50,9 @@ BUILDOUT_PLONE_OVERRIDEN_CFGS=buildout.cfg develop.cfg
 all: ~/.rancher/cli.json var/log/buildout-install.log
 
 .PHONY: run-debug
-run-debug: all var/log/postgresql-restore.log run-db-daemon
+run-debug: \
+		all var/log/postgresql-restore.log run-db-daemon \
+		data/blobstorage/.local-devel.placeholder
 	./bin/rel_client fg
 .PHONY: run-db-daemon
 run-db-daemon: all
@@ -138,6 +140,17 @@ var/log/postgresql-up.log: ../docker-compose*.yml docker-compose*.yml
 	do
 	    sleep 0.5
 	done | tee -a "./$(@)"
+
+# BLOB storage local mount via SSH
+data/blobstorage/.local-devel.placeholder: /usr/bin/sshfs
+	mkdir -pv "./$(dir $(@))" "./data/blobstorage/"
+	"$(<)" -o nonempty \
+	        "rsync.$(RANCHER_STACK):/data/www-blobstorage/" "./data/blobstorage/"
+	touch "./$(@)"
+# SSHFS local host OS package install
+/usr/bin/sshfs:
+	apt-get update
+	apt-get install -y sshfs
 
 # Install commonly used packages, and only once to minimize Rancher CLI delay
 var/log/apt-install-$(RANCHER_CATALOG_NAME)-$(RANCHER_SERVICE_NAME).log: bin/rancher
