@@ -66,6 +66,10 @@ exec: bin/rancher
 #	./bin/rancher-rsh -l "$(RANCHER_STACK_PREFIX)" "$(RANCHER_DESTINATION)" \
 #	        $(RANCHER_EXEC_CMD)
 
+.PHONY: debug-db
+debug-db: var/log/postgresql-restore.log run-db-daemon
+	docker-compose exec --user "postgres" postgres "psql" "datafs"
+
 .PHONY: install-pkgs
 install-pkgs: var/log/apt-install-$(RANCHER_CATALOG_NAME)-$(RANCHER_SERVICE_NAME).log
 
