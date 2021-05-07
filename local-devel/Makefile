@@ -148,7 +148,7 @@ postgresql.backup/datafs.gz: postgresql.backup/datafs.gz.update
 var/log/postgresql-up.log: $(subst :, ,$(COMPOSE_FILE))
 	docker-compose stop postgres | tee -a "./$(@)"
 	docker-compose rm -f postgres | tee -a "./$(@)"
-	docker-compose up -d postgres | tee -a "./$(@)"
+	docker-compose up -d postgres memcached | tee -a "./$(@)"
 	until docker-compose exec --user "postgres" postgres "pg_isready"
 	do
 	    sleep 0.5

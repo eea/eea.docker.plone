@@ -6,3 +6,7 @@ services:
     - "./postgresql.backup/:/postgresql.backup/"
     ports:
       - "127.0.0.1:${PORT_PREFIX:-51}432:5432"
+
+  memcached:
+    ports:
+      - "127.0.0.1:${PORT_PREFIX:-51}211:11211"
