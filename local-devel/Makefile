@@ -48,7 +48,8 @@ RANCHER_EXEC_CMD=tmux a
 # Process source files for use as prerequisites
 BUILDOUT_PLONE_CFGS=$(shell \
     docker run --rm --entrypoint="bash" "plone:$(PLONE_VERSION)" -c "ls -d1 *.cfg")
-BUILDOUT_PLONE_OVERRIDEN_CFGS=buildout.cfg develop.cfg
+# TODO: Different for KGS
+BUILDOUT_PLONE_OVERRIDEN_CFGS=versions.cfg buildout.cfg develop.cfg
 
 
 # Top-level targets
@@ -99,8 +100,10 @@ var/log/buildout-install.log: \
 		var/log/buildout-link-configs.log local.cfg
 	mkdir -pv "./$(dir $(@))"
 # Versions from `.../plone.docker/5.2/$(PLONE_VERSION)/debian/Dockerfile`
-	"./$(dir $(<))pip3" install -U --upgrade-strategy=eager \
-	        "zc.buildout==2.13.4" "setuptools==51.3.3" "wheel==0.36.2" |
+	"./$(dir $(<))pip" install -U --upgrade-strategy=eager \
+	        "zc.buildout==$(ZC_BUILDOUT_VERSION)" \
+	        "setuptools==$(SETUPTOOLS_VERSION)" \
+	        "wheel==$(WHEEL_VERSION)" |
 	    tee -a "./$(@)"
 	"./$(dir $(<))buildout" -c "./local.cfg" |
 	    tee -a "./$(@)"
@@ -125,7 +128,7 @@ plone-buildout.cfg:
 	    mv --backup=numbered -v "./$${override_file}" "./plone-$${override_file}"
 	done
 .venv/bin/activate:
-	python3 -m venv "./$(@:%/bin/activate=%/)"
+	virtualenv -p $(PYTHON_EXECUTABLE) "./$(@:%/bin/activate=%/)"
 
 # DB restore
 var/log/postgresql-restore.log: postgresql.backup/datafs.gz

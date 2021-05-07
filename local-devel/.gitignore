@@ -5,9 +5,12 @@
 /base.cfg
 /buildout-base.cfg
 /lxml_static.cfg
-/plone-buildout.cfg
-/plone-develop.cfg
+/plone-*.cfg
+/zope*-versions.cfg
 /.*.cfg
 /.plone.versioncheck.tracked.json
 /parts
 /data
+/develop-eggs
+/src
+/_eggmonkey.cache
