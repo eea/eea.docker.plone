@@ -18,6 +18,7 @@ SETUPTOOLS_VERSION=51.3.3
 WHEEL_VERSION=0.36.2
 # Version from `FROM plone:...` in `../Dockerfile`
 PLONE_VERSION=5.2.4
+BUILDOUT_LAYER_DIRS=../src/plone
 
 # Share environment variables between `$ make ...`, `$ docker-compose ...`, etc.:
 # https://lithic.tech/blog/2020-05/makefile-dot-env
@@ -46,10 +47,8 @@ RANCHER_EXEC_OPTS=-it
 RANCHER_EXEC_CMD=tmux a
 
 # Process source files for use as prerequisites
-BUILDOUT_PLONE_CFGS=$(shell \
+BUILDOUT_PLONE_CFGS:=$(shell \
     docker run --rm --entrypoint="bash" "plone:$(PLONE_VERSION)" -c "ls -d1 *.cfg")
-# TODO: Different for KGS
-BUILDOUT_PLONE_OVERRIDEN_CFGS=versions.cfg buildout.cfg develop.cfg
 
 
 # Top-level targets
@@ -114,28 +113,36 @@ var/log/buildout-install.log: \
 	    tee -a "./$(@)"
 	"./$(dir $(<))buildout" -c "./local.cfg" |
 	    tee -a "./$(@)"
+.venv/bin/activate:
+	virtualenv -p $(PYTHON_EXECUTABLE) "./$(@:%/bin/activate=%/)"
 var/log/apt-install-local.log: build-deps.txt run-deps.txt
 	mkdir -pv "./$(dir $(@))"
 	sudo apt-get update | tee -a "./$(@)"
 	sudo apt-get install -y $$(cat $(^)) | tee -a "./$(@)"
-var/log/buildout-link-configs.log: plone-buildout.cfg ../src/plone/*.cfg
-	ln -sfv ../src/plone/*.cfg "./" | tee -a "./$(@)"
-# Extract buildout configuration from the base image
+# Simulate the buildout configuration that results from the image layers in such a way
+# that we're more likely to see differences in `$ git status` when configuration files
+# in the source checkouts are added.
+# Symlink the buildout configuration files extracted from the base image then overwrite
+# with symlinks to the corresponding VCS checkout source for each of the subsequent
+# image layers.
+var/log/buildout-link-configs.log: \
+		$(BUILDOUT_PLONE_CFGS:%=plone/%) $(BUILDOUT_LAYER_DIRS:%=%/*.cfg)
+	for layer_dir in "./plone" $(BUILDOUT_LAYER_DIRS)
+	do
+	    ln -sfv $${layer_dir}/*.cfg "./"
+	done | tee -a "./$(@)"
+# Extract buildout configuration from the base image into a sub-directory
 # TODO: I'd prefer to do this with symlinks to the from the upstream source to better
 # support and test upstream contributions, but I couldn't quickly figure out where the
 # source is for these.
-plone-buildout.cfg:
-	for cfg_file in $(BUILDOUT_PLONE_CFGS)
-	do
-	    docker run --rm --entrypoint="cat" "plone:$(PLONE_VERSION)" \
-	            "./$${cfg_file}" >"./$${cfg_file}"
-	done
-	for override_file in $(BUILDOUT_PLONE_OVERRIDEN_CFGS)
-	do
-	    mv --backup=numbered -v "./$${override_file}" "./plone-$${override_file}"
-	done
-.venv/bin/activate:
-	virtualenv -p $(PYTHON_EXECUTABLE) "./$(@:%/bin/activate=%/)"
+$(BUILDOUT_PLONE_CFGS:%=plone/%): var/log/docker-pull-plone-$(PLONE_VERSION).log
+	mkdir -pv "./$(dir $(@))"
+	docker run --rm --entrypoint="cat" "plone:$(PLONE_VERSION)" \
+	            "./$(@:plone/%=%)" >"./$(@)"
+# Create a build artifact to indicate when we need to refresh the buildout configuration
+# files from the base Plone image.
+var/log/docker-pull-plone-$(PLONE_VERSION).log:
+	docker pull "plone:$(PLONE_VERSION)" | tee -a "./$(@)"
 
 # DB restore
 var/log/postgresql-restore.log: postgresql.backup/datafs.gz
