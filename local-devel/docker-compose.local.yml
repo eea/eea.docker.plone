@@ -1,6 +1,10 @@
 version: "2.1"
 services:
 
+  plone:
+    build:
+      context: "../"
+
   postgres:
     volumes:
     - "./postgresql.backup/:/postgresql.backup/"

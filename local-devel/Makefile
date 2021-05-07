@@ -94,9 +94,16 @@ clean:
 
 # Real targets
 
+# Ensure the Docker container image can still be built
+var/log/docker-compose-build.log: \
+		../src/docker/* ../src/plone/* ../Dockerfile \
+		$(subst :, ,$(COMPOSE_FILE))
+	docker-compose build plone | tee -a "./$(@)"
+
 # Keep local Plone instance up to date
 var/log/buildout-install.log: \
 		.venv/bin/activate var/log/apt-install-local.log \
+		var/log/docker-compose-build.log \
 		var/log/buildout-link-configs.log local.cfg
 	mkdir -pv "./$(dir $(@))"
 # Versions from `.../plone.docker/5.2/$(PLONE_VERSION)/debian/Dockerfile`

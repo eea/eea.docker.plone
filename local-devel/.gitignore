@@ -1,3 +1,8 @@
+# Exclude local development from Docker build context but include in VCS
+# https://www.rpatterson.net/blog/docker-gotchas/#build-context-and-image-stowaways
+!/*
+*~
+
 /var
 /bin/*
 !/bin/.gitignore
