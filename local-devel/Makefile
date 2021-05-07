@@ -114,10 +114,10 @@ var/log/buildout-install.log: \
 	    tee -a "./$(@)"
 	"./$(dir $(<))buildout" -c "./local.cfg" |
 	    tee -a "./$(@)"
-var/log/apt-install-local.log:
+var/log/apt-install-local.log: build-deps.txt run-deps.txt
 	mkdir -pv "./$(dir $(@))"
-	sudo apt update | tee -a "./$(@)"
-	sudo apt install -y "libmemcached-dev" | tee -a "./$(@)"
+	sudo apt-get update | tee -a "./$(@)"
+	sudo apt-get install -y $$(cat $(^)) | tee -a "./$(@)"
 var/log/buildout-link-configs.log: plone-buildout.cfg ../src/plone/*.cfg
 	ln -sfv ../src/plone/*.cfg "./" | tee -a "./$(@)"
 # Extract buildout configuration from the base image
