@@ -67,6 +67,17 @@ run-db-daemon: all
 	    ./bin/mv-backup "./var/log/postgresql-up.log"
 	$(MAKE) "var/log/postgresql-up.log"
 
+.PHONY: clean
+clean:
+	fusermount -u ./data/blobstorage/ || true
+# Delete everything that's not in VCS excepting checkouts or data that may take a long
+# time to get back.
+	git clean -f -x -e "src/" -e "var/" -e "postgresql.backup/" -e "*~" ./
+# Move aside log files that may be used as targets for recipes
+	find "./var/log/" -type f -exec "./bin/mv-backup" '{}' ';'
+
+# Utility targets
+
 .PHONY: exec
 exec: bin/rancher
 	./bin/rancher-rsh $(RANCHER_EXEC_OPTS) "$(RANCHER_DESTINATION)" \
@@ -82,14 +93,6 @@ debug-db: var/log/postgresql-restore.log run-db-daemon
 .PHONY: install-pkgs
 install-pkgs: var/log/apt-install-$(RANCHER_CATALOG_NAME)-$(RANCHER_SERVICE_NAME).log
 
-.PHONY: clean
-clean:
-	fusermount -u ./data/blobstorage/ || true
-# Delete everything that's not in VCS excepting checkouts or data that may take a long
-# time to get back.
-	git clean -f -x -e "src/" -e "var/" -e "postgresql.backup/" -e "*~" ./
-# Move aside log files that may be used as targets for recipes
-	find "./var/log/" -type f -exec "./bin/mv-backup" '{}' ';'
 
 # Real targets
 
