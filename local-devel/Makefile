@@ -125,7 +125,7 @@ var/log/docker-compose-build.log: \
 var/log/buildout-install.log: \
 		.venv/bin/activate var/log/apt-install-local.log \
 		var/log/docker-compose-build.log \
-		var/log/buildout-link-configs.log local.cfg
+		var/log/buildout-link-configs.log .env.cfg local.cfg
 	mkdir -pv "./$(dir $(@))"
 # Versions from `.../plone.docker/5.2/$(PLONE_VERSION)/debian/Dockerfile`
 	"./$(dir $(<))pip" install -U --upgrade-strategy=eager \
@@ -231,3 +231,12 @@ var/downloads/rancher-linux-amd64-v$(RANCHER_CLI_VERSION).tar.gz:
 .env: TEMPLATE_SOURCE=.env.in
 .env: TEMPLATE_TARGET=.env
 .env: render-template .env.in
+.env.cfg: .env.cfg.in render-env-cfg
+.PHONY: render-env-cfg
+render-env-cfg:
+# Avoid expensive variable derivation from shell commands, reproduce `$ make ...` logic
+	if test '!' -f "./.env.cfg" -o '(' "./.env.cfg.in" -nt "./.env.cfg" ')'
+	then
+	    $(MAKE) TEMPLATE_SOURCE=".env.cfg.in" TEMPLATE_TARGET=".env.cfg" \
+	            render-template
+	fi

@@ -5,6 +5,7 @@
 
 # From templates in `./Makefile
 /.env
+/.env.cfg
 
 /var
 /bin/*
