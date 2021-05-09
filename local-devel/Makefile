@@ -11,6 +11,7 @@ MAKEFLAGS+=--warn-undefined-variables
 MAKEFLAGS+=--no-builtin-rules
 
 # Defaults if not defined in `./.env`
+COMPOSE_FILE=./docker-compose.local.yml:../docker-compose.yml
 RANCHER_STACK_PREFIX=$(USER)
 PYTHON_EXECUTABLE=python3
 ZC_BUILDOUT_VERSION=2.13.4
@@ -22,10 +23,8 @@ BUILDOUT_LAYER_DIRS=../src/plone
 
 # Share environment variables between `$ make ...`, `$ docker-compose ...`, etc.:
 # https://lithic.tech/blog/2020-05/makefile-dot-env
-ifneq (,$(wildcard ./.env))
-    include .env
-    export
-endif
+include .env
+export
 
 # Constants
 
@@ -93,6 +92,26 @@ debug-db: var/log/postgresql-restore.log run-db-daemon
 .PHONY: install-pkgs
 install-pkgs: var/log/apt-install-$(RANCHER_CATALOG_NAME)-$(RANCHER_SERVICE_NAME).log
 
+.PHONY: render-template
+# Create a file from a template, substitute env vars and and other shell expansion
+render-template: .SHELLFLAGS = -eu -o pipefail -O inherit_errexit -c
+render-template:
+	if test '!' -f "$(TEMPLATE_TARGET)"
+	then
+	    template_str=$$(cat "$(TEMPLATE_SOURCE)")
+	    eval "echo \"$${template_str}\"" >"$(TEMPLATE_TARGET)"
+	    echo "WARNING: '$(TEMPLATE_TARGET)' has been rendered from a template"
+	    echo "Modify rendered values as appropriate and then re-run."
+	    false
+	elif test "$(TEMPLATE_SOURCE)" -nt "$(TEMPLATE_TARGET)"
+	then
+	    echo "WARNING: '$(TEMPLATE_SOURCE)' is newer than '$(TEMPLATE_TARGET)':"
+	    echo "1. Reconcile differences manually"
+	    echo "2. Ensure '$(TEMPLATE_TARGET)' is newer than '$(TEMPLATE_SOURCE)'"
+	    echo "Then re-run."
+	    false
+	fi
+
 
 # Real targets
 
@@ -118,10 +137,12 @@ var/log/buildout-install.log: \
 	    tee -a "./$(@)"
 .venv/bin/activate:
 	virtualenv -p $(PYTHON_EXECUTABLE) "./$(@:%/bin/activate=%/)"
+
 var/log/apt-install-local.log: build-deps.txt run-deps.txt
 	mkdir -pv "./$(dir $(@))"
 	sudo apt-get update | tee -a "./$(@)"
 	sudo apt-get install -y $$(cat $(^)) | tee -a "./$(@)"
+
 # Simulate the buildout configuration that results from the image layers in such a way
 # that we're more likely to see differences in `$ git status` when configuration files
 # in the source checkouts are added.
@@ -206,3 +227,7 @@ var/downloads/rancher-linux-amd64-v$(RANCHER_CLI_VERSION).tar.gz:
 	mkdir -pv "./$(dir $(@))"
 	cd "./$(dir $(@))"
 	wget "https://releases.rancher.com/cli/v$(RANCHER_CLI_VERSION)/rancher-linux-amd64-v$(RANCHER_CLI_VERSION).tar.gz"
+
+.env: TEMPLATE_SOURCE=.env.in
+.env: TEMPLATE_TARGET=.env
+.env: render-template .env.in

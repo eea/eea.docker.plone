@@ -3,6 +3,9 @@
 !/*
 *~
 
+# From templates in `./Makefile
+/.env
+
 /var
 /bin/*
 !/bin/.gitignore
