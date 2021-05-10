@@ -183,7 +183,7 @@ postgresql.backup/datafs.gz: postgresql.backup/datafs.gz.update
 	        "rsync.$(RANCHER_STACK):/data/www-postgres/dump/$(notdir $(@))" \
 	        "./$(@).tmp"
 	mv -v "./$(@).tmp" "./$(@)"
-var/log/postgresql-up.log: $(subst :, ,$(COMPOSE_FILE))
+var/log/postgresql-up.log: $(subst :, ,$(COMPOSE_FILE)) .env
 	docker-compose stop postgres | tee -a "./$(@)"
 	docker-compose rm -f postgres | tee -a "./$(@)"
 	docker-compose up -d postgres memcached | tee -a "./$(@)"
