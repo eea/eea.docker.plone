@@ -22,9 +22,9 @@ pipeline {
               sh '''docker run -i --rm --link=${BUILD_TAG,,}:plone --name=${BUILD_TAG,,}-test --entrypoint /plone/instance/bin/zopepy ${BUILD_TAG,,} -c "from six.moves.urllib.request import urlopen; import time; time.sleep(15); con = urlopen('http://plone:8080'); print(con.read())"'''
               sh '''./test/run.sh ${BUILD_TAG,,}'''
             } finally {
-              sh '''docker stop ${BUILD_TAG,,}'''
-              sh '''docker rm -v ${BUILD_TAG,,}'''
-              sh '''docker rmi ${BUILD_TAG,,}'''
+              sh '''echo $(docker stop ${BUILD_TAG,,})'''
+              sh '''echo $(docker rm -v ${BUILD_TAG,,})'''
+              sh '''echo $(docker rmi ${BUILD_TAG,,})'''
             }
           }
         }
@@ -49,6 +49,9 @@ pipeline {
  }
 
   post {
+    always {
+      cleanWs(cleanWhenAborted: true, cleanWhenFailure: true, cleanWhenNotBuilt: true, cleanWhenSuccess: true, cleanWhenUnstable: true, deleteDirs: true)
+    }
     changed {
       script {
         def url = "${env.BUILD_URL}/display/redirect"
