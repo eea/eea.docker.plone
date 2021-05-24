@@ -29,6 +29,20 @@ services:
       ZOPE_MODE: "${ZOPE_MODE:-zeo_client}"
       TZ: "Europe/Copenhagen"
 
+  # Upgrade all GenericSetup profies once each time services are started.
+  plonesite:
+    image: "${IMAGE:-eeacms/plone}"
+    depends_on:
+      - memcached
+      - postfix
+      - zeo
+      - postgres
+    environment:
+      ZOPE_MODE: "${ZOPE_MODE:-zeo_client}"
+      TZ: "Europe/Copenhagen"
+    entrypoint: >-
+      ./bin/buildout plonesite:enabled=True install plonesite
+
   zeo:
     image: "${IMAGE:-eeacms/plone}"
     environment:
