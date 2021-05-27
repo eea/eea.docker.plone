@@ -1,0 +1,21 @@
+# Exclude local development from Docker build context but include in VCS
+# https://www.rpatterson.net/blog/docker-gotchas/#build-context-and-image-stowaways
+!/*
+*~
+
+# From templates in `./Makefile
+/.env
+/.env.cfg
+
+/var
+/bin/*
+!/bin/.gitignore
+/.venv
+/plone/*.cfg
+/.*.cfg
+/.plone.versioncheck.tracked.json
+/parts
+/data
+/develop-eggs
+/src
+/_eggmonkey.cache

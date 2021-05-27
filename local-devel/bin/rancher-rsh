@@ -1,0 +1,55 @@
+#!/bin/bash -eu
+#
+# Wrapper around `$ rancher exec` and `./Makefile` that can be invoked like `$ ssh ...`
+
+# Defensive shell settings, avoid silent failures and errors
+set -o pipefail
+PS4='${LINENO}+'
+set -x
+
+
+main() {
+    # Expects the Rancher CLI to be installed next to this script
+    bin_dir="$(dirname $(realpath "${0}"))"
+
+    # Handle the ssh/rsh `-l` login name option
+    while getopts "l:it" opt "${@}"
+    do
+        case "${opt}" in
+            l) login_name="${OPTARG}";;
+            i|t)
+                # Should the command be executed with an interactive terminal?
+                rancher_exec_opts="${rancher_exec_opts:-}-${opt} "
+                # Seem to have to use `$ script` to resolve interactive command issues
+                # TODO: Lower level, don't write `./typescript` in the container
+                exec_cmd_wrapper="script -e -c"
+                ;;
+            ?) echo "Invalid option: -${OPTARG}" >&2;
+            return 1;;
+        esac
+    done
+    shift $((${OPTIND} - 1))
+
+    # Split up the SSH destination into Rancher stack and service bits
+    destination="${1}"
+    # Remaining positonal parameters will be passed on
+    shift
+    # `sue@debug-instance.www-eea` -> `sue-www-eea/debug-instance`
+    user=${destination%@*}
+    # The `-l` login name option overrides the username before the `@`
+    login_name="${login_name:-${user}}"
+    domain="${destination#*@}"
+    tld="${domain#*.}"
+    hostname="${domain%.*}"
+
+    # Reassemble those bits into the `$ rancher exec ...` command
+    if [[ -v exec_cmd_wrapper ]]
+    then
+        exec_cmd=${exec_cmd_wrapper}\ "${*}"
+    fi
+    exec "${bin_dir}/rancher" exec ${rancher_exec_opts:-}\
+         "${login_name}-${tld}/${hostname}" ${exec_cmd:-"${@}"}
+}
+
+
+main "$@"

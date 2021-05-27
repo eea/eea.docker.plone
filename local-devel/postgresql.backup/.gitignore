@@ -1,0 +1,4 @@
+/datafs.gz
+# Rsync temporary files
+/datafs.gz.tmp
+/.datafs.gz.tmp.*
