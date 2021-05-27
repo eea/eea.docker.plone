@@ -13,7 +13,7 @@ MAKEFLAGS+=--no-builtin-rules
 # Defaults if not defined in `./.env`
 COMPOSE_FILE=./docker-compose.local.yml:../docker-compose.yml
 RANCHER_STACK_PREFIX=$(USER)
-PYTHON_EXECUTABLE=python3
+PYTHON_EXECUTABLE=python3.8
 ZC_BUILDOUT_VERSION=2.13.4
 SETUPTOOLS_VERSION=51.3.3
 WHEEL_VERSION=0.36.2
