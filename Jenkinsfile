@@ -10,20 +10,23 @@ pipeline {
   }
   
   stages {
+    environment {
+      IMAGE_NAME = BUILD_TAG.toLowerCase()
+    }
     stage('Build & Test') {
       steps {
         node(label: 'docker') {
           script {
             try {
               checkout scm
-              sh '''docker build -t ${BUILD_TAG,,} .'''
-              sh '''docker run -d --name=${BUILD_TAG,,} ${BUILD_TAG,,} fg'''
-              sh '''docker run -i --rm --link=${BUILD_TAG,,}:plone --name=${BUILD_TAG,,}-test --entrypoint /plone/instance/bin/zopepy ${BUILD_TAG,,} -c "from six.moves.urllib.request import urlopen; import time; time.sleep(15); con = urlopen('http://plone:8080'); print(con.read())"'''
-              sh '''./test/run.sh ${BUILD_TAG,,}'''
+              sh '''docker build -t ${IMAGE_NAME} .'''
+              sh '''docker run -d --name=${IMAGE_NAME} ${IMAGE_NAME} fg'''
+              sh '''docker run -i --rm --link=${IMAGE_NAME}:plone --name=${IMAGE_NAME}-test --entrypoint /plone/instance/bin/zopepy ${IMAGE_NAME} -c "from six.moves.urllib.request import urlopen; import time; time.sleep(15); con = urlopen('http://plone:8080'); print(con.read())"'''
+              sh '''./test/run.sh ${IMAGE_NAME}'''
             } finally {
-              sh script: "docker stop ${BUILD_TAG,,}", returnStatus: true
-              sh script: "docker rm -v ${BUILD_TAG,,}", returnStatus: true
-              sh script: "docker rmi ${BUILD_TAG,,}", returnStatus: true
+              sh script: "docker stop ${IMAGE_NAME}", returnStatus: true
+              sh script: "docker rm -v ${IMAGE_NAME}", returnStatus: true
+              sh script: "docker rmi ${IMAGE_NAME}", returnStatus: true
             }
           }
         }
