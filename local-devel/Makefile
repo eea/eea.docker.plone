@@ -13,7 +13,7 @@ MAKEFLAGS+=--no-builtin-rules
 # Defaults if not defined in `./.env`
 COMPOSE_FILE=./docker-compose.local.yml:../docker-compose.yml
 RANCHER_STACK_PREFIX=$(USER)
-PYTHON_EXECUTABLE=python3
+PYTHON_EXECUTABLE=python3.8
 ZC_BUILDOUT_VERSION=2.13.4
 SETUPTOOLS_VERSION=51.3.3
 WHEEL_VERSION=0.36.2
@@ -140,6 +140,15 @@ var/log/buildout-install.log: \
 
 var/log/apt-install-local.log: build-deps.txt run-deps.txt
 	mkdir -pv "./$(dir $(@))"
+	which apt-get || (
+	    set +x
+	    echo "ERROR: Automatic installation of OS deps is only supported on Debian/Ubuntu."
+	    echo "       Install equivalents for your OS of the packages in:"
+	    echo "       \`$(^:%=./%)"\`
+	    echo "       Then run:"
+	    echo "       \`$$ touch \"./var/log/apt-install-local.log\"\`"
+	    false
+	)
 	sudo apt-get update | tee -a "./$(@)"
 	sudo apt-get install -y $$(cat $(^)) | tee -a "./$(@)"
 
@@ -193,15 +202,22 @@ var/log/postgresql-up.log: $(subst :, ,$(COMPOSE_FILE)) .env
 	done | tee -a "./$(@)"
 
 # BLOB storage local mount via SSH
-data/blobstorage/.local-devel.placeholder: /usr/bin/sshfs
+data/blobstorage/.local-devel.placeholder: var/log/apt-install-sshfs.log
 	mkdir -pv "./$(dir $(@))" "./data/blobstorage/"
-	"$(<)" -o nonempty \
+	sshfs -o nonempty \
 	        "rsync.$(RANCHER_STACK):/data/www-blobstorage/" "./data/blobstorage/"
 	touch "./$(@)"
 # SSHFS local host OS package install
-/usr/bin/sshfs:
-	apt-get update
-	apt-get install -y sshfs
+var/log/apt-install-sshfs.log:
+	which apt-get || (
+	    set +x
+	    echo "ERROR: Automatic installation of OS deps is only supported on Debian/Ubuntu."
+	    echo "       Install equivalents for your OS of the \`sshfs\` package and, then run:"
+	    echo "       \`$$ touch \"./var/log/apt-install-sshfs.log\"\`"
+	    false
+	)
+	sudo apt-get update | tee -a "./$(@)"
+	sudo apt-get install -y sshfs | tee -a "./$(@)"
 
 # Install commonly used packages, and only once to minimize Rancher CLI delay
 var/log/apt-install-$(RANCHER_CATALOG_NAME)-$(RANCHER_SERVICE_NAME).log: bin/rancher
