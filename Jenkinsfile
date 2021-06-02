@@ -10,10 +10,10 @@ pipeline {
   }
   
   stages {
-    environment {
-      IMAGE_NAME = BUILD_TAG.toLowerCase()
-    }
     stage('Build & Test') {
+      environment {
+        IMAGE_NAME = BUILD_TAG.toLowerCase()
+      }
       steps {
         node(label: 'docker') {
           script {
