@@ -4,6 +4,7 @@ import os
 from contextlib import closing
 import urllib.request, urllib.error, urllib.parse
 from plone_initialize import Environment as PloneEnvironment
+from plone_initialize import CORS_TEMPLATE
 from shutil import copy
 
 
@@ -36,7 +37,7 @@ class Environment(PloneEnvironment):
 
         self.mode = mode
         self.zope_conf = conf
-        self.cors_conf = "/plone/instance/parts/%s/etc/package-includes/999-additional-overrides.zcml" % mode
+        self.cors_conf = "/plone/instance/parts/%s/etc/package-includes/999-cors-overrides.zcml" % mode
 
         self.graylog = self.env.get('GRAYLOG', '')
         self.facility = self.env.get('GRAYLOG_FACILITY', self.mode)
@@ -166,6 +167,33 @@ class Environment(PloneEnvironment):
         """
         if self.keep_history:
             self.conf = self.conf.replace('keep-history false', 'keep-history true')
+
+    def cors(self):
+        """ Configure CORS Policies
+        """
+        if not [e for e in self.env if e.startswith("CORS_")]:
+            return
+
+        allow_origin = self.env.get("CORS_ALLOW_ORIGIN",
+            "http://localhost:3000,http://127.0.0.1:3000")
+        allow_methods = self.env.get("CORS_ALLOW_METHODS",
+            "DELETE,GET,OPTIONS,PATCH,POST,PUT")
+        allow_credentials = self.env.get("CORS_ALLOW_CREDENTIALS", "true")
+        expose_headers = self.env.get("CORS_EXPOSE_HEADERS",
+            "Content-Length,X-My-Header")
+        allow_headers = self.env.get("CORS_ALLOW_HEADERS",
+            "Accept,Authorization,Content-Type,X-Custom-Header,Lock-Token")
+        max_age = self.env.get("CORS_MAX_AGE", "3600")
+        cors_conf = CORS_TEMPLATE.format(
+            allow_origin=allow_origin,
+            allow_methods=allow_methods,
+            allow_credentials=allow_credentials,
+            expose_headers=expose_headers,
+            allow_headers=allow_headers,
+            max_age=max_age
+        )
+        with open(self.cors_conf, "w") as cfile:
+            cfile.write(cors_conf)
 
     def finish(self):
         conf = self.conf

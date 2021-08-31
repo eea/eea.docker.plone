@@ -10,4 +10,4 @@ docker run -i --rm \
 	-e CORS_MAX_AGE=600 \
 	-e ZOPE_MODE=zeo_client \
 	-v /plone/instance/bin/develop \
-	"$1" cat parts/zeo_client/etc/package-includes/999-additional-overrides.zcml
+	"$1" cat parts/zeo_client/etc/package-includes/999-cors-overrides.zcml
