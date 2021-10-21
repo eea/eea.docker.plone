@@ -93,7 +93,7 @@ Below is an example of `site.cfg` and `Dockerfile` to build a custom version of 
 
 and then run
 
-    $ docker build -t plone-rulez.
+    $ docker build -t plone-rulez .
 
 
 ## Supported environment variables
