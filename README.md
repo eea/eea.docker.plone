@@ -16,23 +16,7 @@ Plone 5 (Python 3) with built-in support for:
 
 This image is generic, thus you can obviously re-use it within your own projects.
 
-## Supported tags and respective Dockerfile links
-
-* `:latest` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/master/Dockerfile)
-* `:5.2.x` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/5.2.x/Dockerfile)
-* `:5.2.x-python2` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/5.2.x-python2/Dockerfile)
-* `:5.1.x` [*Dockerfile*](https://github.com/eea/eea.docker.plone/blob/5.1.x/Dockerfile)
-
-### Stable and immutable tags
-
-* `:5.2.1-3` [*Dockerfile*](https://github.com/eea/eea.docker.plone/tree/5.2.1-2/Dockerfile)
-* `:5.2.0-7` [*Dockerfile*](https://github.com/eea/eea.docker.plone/tree/5.2.0-7/Dockerfile)
-* `:5.2.0-python2-7` [*Dockerfile*](https://github.com/eea/eea.docker.plone/tree/5.2.0-python2-7/Dockerfile)
-* `:5.1.6-7` [*Dockerfile*](https://github.com/eea/eea.docker.plone/tree/5.1.6-7/Dockerfile)
-
-See [older versions](https://github.com/eea/eea.docker.plone/releases)
-
-### Changes
+## Releases
 
 * `github.com:` [eea/eea.docker.plone/releases](https://github.com/eea/eea.docker.plone/releases)
 
@@ -109,7 +93,7 @@ Below is an example of `site.cfg` and `Dockerfile` to build a custom version of 
 
 and then run
 
-    $ docker build -t plone-rocks .
+    $ docker build -t plone-rulez .
 
 
 ## Supported environment variables
