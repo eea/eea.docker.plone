@@ -14,8 +14,12 @@ libxml2
 libxslt1.1
 libyaml-0-2
 lynx
+mc
 poppler-utils
+procps
+silversearcher-ag
 subversion
 tex-gyre
+tmux
 vim
 wv
