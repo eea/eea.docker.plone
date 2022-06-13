@@ -1,4 +1,4 @@
-FROM plone:5.2.4
+FROM plone:5.2.7
 LABEL maintainer="EEA: IDM2 A-Team <eea-edw-a-team-alerts@googlegroups.com>"
 
 ENV GRAYLOG=logcentral.eea.europa.eu:12201 \
