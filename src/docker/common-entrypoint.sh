@@ -20,5 +20,13 @@ if [ -n "$RESTART_CRON" ] ; then
     service cron restart
 
 fi
+if [ -n "$CRON_JOBS" ] ; then
+    echo "${CRON_JOBS}" >> /var/plone_jobs.txt
+
+    crontab /var/plone_jobs.txt
+    chmod 600 /etc/crontab
+    service cron restart
+
+fi
 
 exec /plone-entrypoint.sh "$@"
