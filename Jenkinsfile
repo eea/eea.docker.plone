@@ -24,6 +24,7 @@ pipeline {
               sh '''docker run -i --rm --link=${IMAGE_NAME}:plone --name=${IMAGE_NAME}-test --entrypoint /plone/instance/bin/zopepy ${IMAGE_NAME} -c "from six.moves.urllib.request import urlopen; import time; time.sleep(15); con = urlopen('http://plone:8080'); print(con.read())"'''
               sh '''./test/run.sh ${IMAGE_NAME}'''
             } finally {
+              sh script: "docker logs ${IMAGE_NAME}", returnStatus: true
               sh script: "docker stop ${IMAGE_NAME}", returnStatus: true
               sh script: "docker rm -v ${IMAGE_NAME}", returnStatus: true
               sh script: "docker rmi ${IMAGE_NAME}", returnStatus: true
