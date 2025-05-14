@@ -11,7 +11,7 @@ touch /etc/contab /etc/cron.*/*
 if [ -n "$RESTART_CRON" ] ; then
     ID=`echo ${HOSTNAME: -1} | sed "s|[a-zA-Z-]||g"`
     if [ -z "$ID" ] ; then
-        ID="1"
+        ID=$((RANDOM % 7))
     fi
     echo "${RESTART_CRON} kill -2 1" | sed "s|x|$ID|g" > /var/plone_jobs.txt
 
