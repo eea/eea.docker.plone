@@ -9,7 +9,7 @@ find /plone -not -user plone -exec chown plone:plone {} \+
 touch /etc/contab /etc/cron.*/*
 
 if [ -n "$RESTART_CRON" ] ; then
-    echo "${RESTART_CRON} kill -2 1" | sed "s/x/$((RANDOM % 7))/g > /var/plone_jobs.txt
+    echo "${RESTART_CRON} kill -2 1" | sed "s/x/$((RANDOM % 7))/g" > /var/plone_jobs.txt
     
     crontab /var/plone_jobs.txt
     chmod 600 /etc/crontab
