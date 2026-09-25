@@ -10,7 +10,7 @@ RUN mv /docker-entrypoint.sh /plone-entrypoint.sh \
  && mv /plone/instance/develop.cfg /plone/instance/plone-develop.cfg \
  #Update bullseye repositories
  && sed -i s/deb.debian.org/archive.debian.org/g /etc/apt/sources.list \\
- && sed -i '/debian-security/d' /etc/apt/sources.list
+ && sed -i '/debian-security/d' /etc/apt/sources.list \
  ## && sed -i 's|security.debian.org|archive.debian.org/|g' /etc/apt/sources.list \
  && sed -i '/bullseye-updates/d' /etc/apt/sources.list
 
