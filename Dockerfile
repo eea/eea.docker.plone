@@ -13,9 +13,6 @@ RUN mv /docker-entrypoint.sh /plone-entrypoint.sh \
  ## && sed -i 's|security.debian.org|archive.debian.org/|g' /etc/apt/sources.list \
  && sed -i '/bullseye-updates/d' /etc/apt/sources.list
 
-deb http://security.debian.org/debian-security/ bullseye-security main contrib non-free
-
-
 COPY src/docker/* /
 COPY src/plone/* /plone/instance/
 RUN /docker-setup.sh
